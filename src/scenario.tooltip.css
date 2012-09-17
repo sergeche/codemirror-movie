@@ -1,0 +1,43 @@
+.CodeMirror-tooltip {
+	position: absolute;
+	padding: 10px;
+	font-family: sans-serif;
+	color: #fff;
+	border-radius: 5px;
+	background: #000;
+	background: rgba(0,0,0,0.8);
+	max-width: 15em;
+	font-size: 12px;
+}
+
+.CodeMirror-tooltip__tail {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	bottom: -10px;
+	clip: rect(10px, auto, auto, auto);
+}
+
+.CodeMirror-tooltip__tail:before {
+	width: 10px;
+	height: 10px;
+	content: '';
+	display: block;
+	position: relative;
+	margin: 5px auto;
+	background: #000;
+	background: rgba(0,0,0,0.8);
+	
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+/* State of tooltip when it is positioned at the bottom of the target  */
+.CodeMirror-tooltip_at-bottom .CodeMirror-tooltip__tail {
+	top: -10px;
+	bottom: auto;
+	clip: rect(auto, auto, 10px, auto);
+}

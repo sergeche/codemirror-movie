@@ -4,10 +4,13 @@
 <meta charset="utf-8">
 <title>CodeMirror Scenario</title>
 <link rel="stylesheet" href="./src/codemirror2/codemirror.css">
+<link rel="stylesheet" href="./src/scenario.tooltip.css">
 <script src="./src/codemirror2/codemirror.js"></script>
 <script src="./src/codemirror2/css.js"></script>
 <script src="./src/codemirror2/xml.js"></script>
 <script src="./src/lib/underscore.js"></script>
+<script src="./src/lib/underscore-ext.js"></script>
+<script src="./src/lib/zepto.min.js"></script>
 
 <script src="./src/scenario.js"></script>
 
@@ -23,7 +26,10 @@
 </head>
 <body>
 	<h1>CodeMirror Scenario</h1>
-
+	<div class="CodeMirror-tooltip CodeMirror-tooltip_at-bottom" style="top: 160px;left: 100px;">
+		<div class="CodeMirror-tooltip__content">Hello world</div>
+		<div class="CodeMirror-tooltip__tail"></div>
+	</div>
 	<form>
 		<textarea id="code" name="code"></textarea>
 	</form>
@@ -31,14 +37,16 @@
 		var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
 			value : '',
 			mode : 'text/html',
-			lineNumbers : true
+			lineNumbers : true,
+			readOnly: true
 		});
-
+	
 		var scenario = CodeMirror.scenario([
-			{type: {text: 'Hello world'}}
-		]);
+			'type:Hello world!'
+			// {type: {text: 'Hello world'}}
+		], editor);
 		
-		scenario.play(editor);
+		scenario.play();
 	</script>
 </body>
 </html>
