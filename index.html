@@ -11,8 +11,10 @@
 <script src="./src/lib/underscore.js"></script>
 <script src="./src/lib/underscore-ext.js"></script>
 <script src="./src/lib/zepto.min.js"></script>
+<script src="./src/lib/tween.js"></script>
 
 <script src="./src/scenario.js"></script>
+<script src="./src/scenario.tooltip.js"></script>
 
 <style type="text/css">
 .CodeMirror {
@@ -26,11 +28,11 @@
 </head>
 <body>
 	<h1>CodeMirror Scenario</h1>
-	<div class="CodeMirror-tooltip CodeMirror-tooltip_at-bottom" style="top: 160px;left: 100px;">
+	<div class="CodeMirror-tooltip CodeMirror-tooltip_below" style="top: 160px;left: 100px;">
 		<div class="CodeMirror-tooltip__content">Hello world</div>
 		<div class="CodeMirror-tooltip__tail"></div>
 	</div>
-	<form>
+	<form style="height: 1000px;">
 		<textarea id="code" name="code"></textarea>
 	</form>
 	<script>
@@ -47,6 +49,10 @@
 		], editor);
 		
 		scenario.play();
+		
+		$(document).click(function(evt) {
+			CodeMirror.scenarioTooltip.show('Hello world', {x: evt.pageX, y: evt.pageY});
+		});
 	</script>
 </body>
 </html>
