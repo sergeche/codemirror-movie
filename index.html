@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>CodeMirror Scenario</title>
+<link rel="stylesheet" href="./src/codemirror2/codemirror.css">
+<script src="./src/codemirror2/codemirror.js"></script>
+<script src="./src/codemirror2/css.js"></script>
+<script src="./src/codemirror2/xml.js"></script>
+<script src="./src/lib/underscore.js"></script>
+
+<script src="./src/scenario.js"></script>
+
+<style type="text/css">
+.CodeMirror {
+	border: 1px solid #eee;
+}
+
+.CodeMirror-scroll {
+	height: 100%
+}
+</style>
+</head>
+<body>
+	<h1>CodeMirror Scenario</h1>
+
+	<form>
+		<textarea id="code" name="code"></textarea>
+	</form>
+	<script>
+		var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+			value : '',
+			mode : 'text/html',
+			lineNumbers : true
+		});
+
+		var scenario = CodeMirror.scenario([
+			{type: {text: 'Hello world'}}
+		]);
+		
+		scenario.play(editor);
+	</script>
+</body>
+</html>
