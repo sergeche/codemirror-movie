@@ -10,8 +10,9 @@
 <script src="./src/codemirror2/codemirror.js"></script>
 <script src="./src/codemirror2/css.js"></script>
 <script src="./src/codemirror2/xml.js"></script>
-<script src="./src/lib/underscore.js"></script>
-<script src="./src/lib/underscore-ext.js"></script>
+
+<script src="./src/lib/emmet.min.js"></script>
+<!-- <script src="./src/lib/underscore.js"></script> -->
 <script src="./src/lib/zepto.min.js"></script>
 <script src="./src/lib/tween.js"></script>
 
@@ -27,18 +28,6 @@
 	/* padding-right: 150px; */
 }
 
-.CodeMirror-gutter {
-	/* border: 1px solid #e3e3e3; */
-}
-
-.CodeMirror-scroll {
-	/* height: 100%; */
-	/* margin-right: 150px; */
-}
-
-.CodeMirror-outline {
-	width: 100px;
-}
 </style>
 </head>
 <body>
@@ -58,12 +47,6 @@
 &lt;body&gt;
 	&lt;header&gt;
 		|
-		&lt;ul class="nav"&gt;
-			&lt;li class="item1"&gt;&lt;a href=""&gt;Item 1&lt;/a&gt;&lt;/li&gt;
-			&lt;li class="item2"&gt;&lt;a href=""&gt;Item 2&lt;/a&gt;&lt;/li&gt;
-			&lt;li class="item3"&gt;&lt;a href=""&gt;Item 3&lt;/a&gt;&lt;/li&gt;
-			&lt;li class="item4"&gt;&lt;a href=""&gt;Item 4&lt;/a&gt;&lt;/li&gt;
-		&lt;/ul&gt;
 	&lt;/header&gt;
 &lt;/body&gt;
 &lt;/html&gt;
@@ -73,14 +56,15 @@
 		var scenario = CodeMirror.movie(
 			document.getElementById("code"), 
 			[
-				'type:Hello world!',
+				'type:ul>li.item$*4>a{Item $}',
 				'wait:1000',
-				'tooltip:This is tooltip example',
-				'type: More text.'
+				'tooltip:Run “Expand Abbreviation” action (simply press Tab key)',
+				'wait:600',
+				'run:emmet.expand_abbreviation'
 			], 
 			{
-				'0': 'Item 1',
-				'3': 'Item 2'
+				'0': 'Enter abbreviation',
+				'3': 'Run “Expand Abberviation“ action'
 			});
 
 		scenario.play();

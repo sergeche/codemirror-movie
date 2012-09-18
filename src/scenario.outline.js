@@ -40,14 +40,18 @@ CodeMirror.scenarioOutline = (function() {
 			$(options.target).append($el);
 		}
 		
-		scenario.on('action', function(id) {
-			var items = $el.find(options.itemSelector);
-			var matchedItem = items.filter('[data-action-id="' + id + '"]');
-			if (matchedItem.length) {
-				items.removeClass(options.selectedClass);
-				matchedItem.addClass(options.selectedClass);
-			}
-		});
+		scenario
+			.on('action', function(id) {
+				var items = $el.find(options.itemSelector);
+				var matchedItem = items.filter('[data-action-id="' + id + '"]');
+				if (matchedItem.length) {
+					items.removeClass(options.selectedClass);
+					matchedItem.addClass(options.selectedClass);
+				}
+			})
+			.on('stop', function() {
+				$el.find(options.itemSelector).removeClass(options.selectedClass);;
+			});
 		
 		return $el;
 	};
