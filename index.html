@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="./src/codemirror2/codemirror.css">
 <link rel="stylesheet" href="./src/scenario.css">
 <link rel="stylesheet" href="./src/cm-espresso.css">
+<link rel="stylesheet" href="./src/bootstrap/css/bootstrap.min.css">
 
 <script src="./src/codemirror2/codemirror.js"></script>
 <script src="./src/codemirror2/css.js"></script>
@@ -36,8 +37,7 @@
 		<div class="CodeMirror-tooltip__content">Hello world</div>
 		<div class="CodeMirror-tooltip__tail"></div>
 	</div> -->
-	<form>
-		<textarea id="code" name="code">
+<textarea id="code" name="code">
 &lt;!doctype html&gt;
 &lt;html lang="en"&gt;
 &lt;head&gt;
@@ -50,8 +50,7 @@
 	&lt;/header&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-		</textarea>
-	</form>
+</textarea>
 	<script>
 		var scenario = CodeMirror.movie(
 			document.getElementById("code"), 
@@ -67,7 +66,7 @@
 				'3': 'Run “Expand Abberviation“ action'
 			});
 
-		scenario.play();
+		// scenario.play();
 		
 		/* $(document).click(function(evt) {
 			CodeMirror.scenarioTooltip.show('Hello world', {x: evt.pageX, y: evt.pageY});

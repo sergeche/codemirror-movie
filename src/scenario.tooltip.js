@@ -237,7 +237,9 @@ CodeMirror.scenarioTooltip = (function() {
 		var pos = resolvePosition(options.pos, editor);
 		showTooltip(options.text, pos);
 		timer(function() {
-			hideTooltip(next);
+			hideTooltip(function() {
+				timer(next);
+			});
 		}, options.wait);
 	});
 	

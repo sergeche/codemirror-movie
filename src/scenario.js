@@ -29,7 +29,7 @@ CodeMirror.scenario = (function() {
 		'type': function(options, editor, next, timer) {
 			options = makeOptions(options, 'text', {
 				text: '',  // text to type
-				delay: 80, // delay between character typing
+				delay: 60, // delay between character typing
 				pos: null  // initial position where to start typing
 			});
 			
@@ -122,7 +122,9 @@ CodeMirror.scenario = (function() {
 			});
 			
 			timer(function() {
-				editor.execCommand(options.command);
+				try {
+					editor.execCommand(options.command);
+				} catch (e) {}
 				next();
 			}, options.beforeDelay);
 		},
@@ -216,6 +218,15 @@ CodeMirror.scenario = (function() {
 			return setTimeout(fn, delay);
 	}
 	
+	// XXX add 'revert' action to CodeMirror to restore original text and position
+	CodeMirror.commands.revert = function(editor) {
+		if (editor.__initial) {
+			editor.setValue(editor.__initial.content);
+			editor.setCursor(editor.__initial.pos);
+		}
+	};
+	
+	
 	/**
 	 * @param {Object} actions Actions scenario
 	 * @param {Object} data Initial content (<code>String</code>) or editor
@@ -228,19 +239,17 @@ CodeMirror.scenario = (function() {
 		this._state = STATE_IDLE;
 		this._timerQueue = [];
 		
-		if (_.isString(data)) {
-			this._initial = {
-				content: data,
-				pos: 0
-			};
-		} else if (data && 'getValue' in data) {
-			this._initial = {
-				content: data.getValue(),
-				pos: data.getCursor(true)
-			};
+		if (data && 'getValue' in data) {
 			this._editor = data;
 		}
 		
+		var ed = this._editor;
+		if (ed && !ed.__initial) {
+			ed.__initial = {
+				content: ed.getValue(),
+				pos: ed.getCursor(true)
+			};
+		}
 	}
 	
 	Scenario.prototype = {
@@ -248,11 +257,7 @@ CodeMirror.scenario = (function() {
 			if (!editor && this._editor)
 				editor = this._editor;
 			
-			if (this._initial) {
-				editor.setValue(this._initial.content);
-				editor.setCursor(this._initial.pos);
-			}
-			
+			editor.execCommand('revert');
 			return editor;
 		},
 		
@@ -268,11 +273,11 @@ CodeMirror.scenario = (function() {
 				return;
 			}
 			
-			this._editor = editor = this._setup(editor);
-			editor.focus();
-			
 			if (this._state === STATE_PAUSE) {
 				// revert from paused state
+				editor = editor || this._editor;
+				editor.focus();
+				console.log('revert from pause', editor);
 				var timerObj = null;
 				while (timerObj = this._timerQueue.shift()) {
 					requestTimer(timerObj.fn, timerObj.delay);
@@ -282,6 +287,8 @@ CodeMirror.scenario = (function() {
 				return;
 			}
 			
+			this._editor = editor = this._setup(editor);
+			editor.focus();
 			
 			var timer = _.bind(this.requestTimer, this);
 			var that = this;
@@ -322,10 +329,20 @@ CodeMirror.scenario = (function() {
 		 * Stops playback of current scenario
 		 */
 		stop: function() {
-			this._state = STATE_IDLE;
-			this._timerQueue.length = 0;
-			this._editor.setOption('readOnly', false);
-			this.trigger('stop');
+			if (this._state !== STATE_IDLE) {
+				this._state = STATE_IDLE;
+				this._timerQueue.length = 0;
+				this._editor.setOption('readOnly', false);
+				this.trigger('stop');
+			}
+		},
+		
+		toggle: function() {
+			if (this._state === STATE_PLAY) {
+				this.pause();
+			} else {
+				this.play();
+			}
 		},
 		
 		requestTimer: function(fn, delay) {
@@ -487,8 +504,8 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 	initialValue = initialValue.replace(/\r?\n/g, '\n');
 	
 	var initialPos = initialValue.indexOf('|');
-	console.log(initialPos, initialValue.length);
-	$(editorTarget).val(initialValue.replace(/\|/g, ''));
+	initialValue = initialValue.replace(/\|/g, '');
+	$(editorTarget).val(initialValue);
 	
 	var editor = CodeMirror.fromTextArea(editorTarget, editorOptions);
 	var hlLine = editor.setLineClass(0, 'activeline');
@@ -497,6 +514,12 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 		var pos = editor.posFromIndex(initialPos);
 		editor.setCursor(pos);
 	}
+	
+	// save initial data so we can revert to it later
+	editor.__initial = {
+		content: initialValue,
+		pos: editor.getCursor(true)
+	};
 	
 	
 	var $w = $(editor.getWrapperElement()).addClass('CodeMirror-movie');
@@ -507,6 +530,51 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 			.addClass('CodeMirror-movie_with-outline')
 			.append(CodeMirror.scenarioOutline(outline, sc));
 	}
+	
+	// add splash screen
+	var splash = $('<div class="CodeMirror-movie__splash">' 
+			+ '<div class="CodeMirror-movie__splash-text"><span class="CodeMirror-movie__splash-play-btn">▶</span> Watch demo</div>' 
+			+ '</div>')
+			.click(function() {
+				sc.play();
+			});
+	
+	var removeSplash = function() {
+		if (splash) {
+			splash.remove();
+			splash = null;
+		}
+	};
+	
+	$w.append(splash);
+	
+	sc.on('play', removeSplash);
+	
+	// create toolbar
+	var btnPlay = $('<button class="btn btn-mini btn-primary CodeMirror-movie__btn-play">▶ Play demo</button>')
+		.click(function() {
+			sc.toggle();
+		});
+	var btnTry = $('<button class="btn btn-mini btn-success CodeMirror-movie__btn-try">Try it yourself</button>')
+		.click(function() {
+			sc.stop();
+			removeSplash();
+			editor.execCommand('revert');
+			editor.focus();
+		});
+	
+	var toolbar = $('<div class="CodeMirror-movie__toolbar"></div>')
+		.append(btnPlay)
+		.append(btnTry);
+	
+	sc.on('play', function() {
+		btnPlay.html('\u275a\u275a Pause');
+	})
+	.on('pause stop', function() {
+		btnPlay.html('▶ Play again');
+	});
+	
+	$w.before(toolbar);
 	
 	return sc;
 };
