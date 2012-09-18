@@ -55,6 +55,8 @@
 	margin: 0;
 	padding: 0;
 	overflow: auto;
+	position: absolute;
+	right: 0;
 }
 
 .CodeMirror-outline__item {

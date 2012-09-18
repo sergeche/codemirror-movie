@@ -1,0 +1,134 @@
+/* Espresso theme for CodeMirror */
+.cm-s-espresso .cm-keyword {
+	color: #2F6F9F;
+	background-color: rgb(244, 250, 255);
+}
+
+.cm-s-espresso .cm-atom {
+	color: #70a145;
+}
+
+.cm-s-espresso .cm-number {
+	color: #70a145;
+}
+
+.cm-s-espresso .cm-def {
+	color: #aac6e3;
+}
+
+.cm-s-espresso .cm-variable {
+	color: #d1431c;
+}
+
+.cm-s-espresso .cm-variable-2 {
+	color: #eed1b3;
+}
+
+.cm-s-espresso .cm-variable-3 {
+	color: #faded3;
+}
+
+.cm-s-espresso .cm-property {
+	color: #eed1b3;
+}
+
+.cm-s-espresso .cm-operator {
+	color: #fa8d6a;
+}
+
+.cm-s-espresso .cm-comment {
+	color: #b2b2b2;
+	font-weight: normal;
+}
+
+.cm-s-espresso .cm-string {
+	/* color: #8f9d6a; */
+	color: #d44950;
+}
+
+.cm-s-espresso .cm-string-2 {
+	color: #9d937c;
+}
+
+.cm-s-espresso .cm-meta {
+	color: #b2b2b2;
+}
+
+.cm-s-espresso .cm-error {
+	background-color: #f93232;
+	color: #f9f2ce;
+}
+
+.cm-s-espresso .cm-qualifier {
+	color: yellow;
+}
+
+.cm-s-espresso .cm-builtin {
+	color: #9999cc;
+}
+
+.cm-s-espresso .cm-bracket {
+	color: #7f7f7f;
+}
+
+.cm-s-espresso .cm-tag {
+	color: #2F6F9F;
+}
+
+.cm-s-espresso .cm-attribute {
+	color: #4F9FCF;
+}
+
+.cm-s-espresso .cm-header {
+	color: blue;
+}
+
+.cm-s-espresso .cm-quote {
+	color: #24C2C7;
+}
+
+.cm-s-espresso .cm-hr {
+	color: pink;
+}
+
+.cm-s-espresso .cm-link {
+	color: #F4C20B;
+}
+
+.cm-s-espresso .cm-special {
+	color: #FF9D00;
+}
+
+.cm-s-espresso .CodeMirror-matchingbracket {
+	outline: 1px solid #ccc;
+}
+
+.cm-s-espresso .CodeMirror-nonmatchingbracket {
+	color: #f22;
+}
+
+
+/* Editor styling */
+.cm-s-espresso {
+	line-height: 1.4;
+	font-family: Monaco, Menlo, 'Andale Mono', 'lucida console', monospace !important;
+	color: #000;
+	background: #fff;
+}
+
+.cm-s-espresso .CodeMirror-gutter {
+	background: #fbfbfb;
+	padding: 0 5px;
+}
+
+.cm-s-espresso .CodeMirror-gutter .CodeMirror-gutter-text {
+	color: #bebec5;
+}
+
+.cm-s-espresso .CodeMirror-lines .CodeMirror-cursor {
+	border-left: 1px solid #000;
+}
+
+.cm-s-espresso .activeline {
+	background: #f2f4f7;
+}

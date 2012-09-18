@@ -268,6 +268,7 @@ CodeMirror.scenario = (function() {
 			};
 			
 			this._state = STATE_PLAY;
+			this._editor.setOption('readOnly', true);
 			this.trigger('play');
 			next();
 		},
@@ -287,6 +288,7 @@ CodeMirror.scenario = (function() {
 		stop: function() {
 			this._state = STATE_IDLE;
 			this._timerQueue.length = 0;
+			this._editor.setOption('readOnly', false);
 			this.trigger('stop');
 		},
 		
@@ -313,3 +315,42 @@ CodeMirror.scenario = (function() {
 		makePos: makePos
 	});
 })();
+
+/**
+ * Helper function that set-up movie instance
+ */
+CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
+	editorOptions = _.extend({
+		theme: 'espresso',
+		mode : 'text/html',
+		lineNumbers : true,
+		onCursorActivity: function() {
+			editor.setLineClass(hlLine, null, null);
+			hlLine = editor.setLineClass(editor.getCursor().line, null, "activeline");
+		}
+	}, editorOptions || {});
+	
+	var initialValue = editorOptions.value || $(editorTarget).val() || '';
+	var initialPos = initialValue.indexOf('|');
+	$(editorTarget).val(initialValue.replace(/\|/g, ''));
+	
+	var editor = CodeMirror.fromTextArea(editorTarget, editorOptions);
+	var hlLine = editor.setLineClass(0, 'activeline');
+	if (initialPos != -1) {
+		// move caret to initial position
+		var pos = editor.posFromIndex(initialPos);
+		editor.setCursor(pos);
+	}
+	
+	
+	var $w = $(editor.getWrapperElement()).addClass('CodeMirror-movie');
+	
+	var scenario = CodeMirror.scenario(scenario, editor);
+	if (outline) {
+		$w
+			.addClass('CodeMirror-movie_with-outline')
+			.append(CodeMirror.scenarioOutline(outline, scenario));
+	}
+	
+	return scenario;
+};
