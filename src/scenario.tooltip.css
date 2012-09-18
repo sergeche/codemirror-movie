@@ -7,7 +7,7 @@
 	padding: 10px;
 	/* border-radius: 5px; */
 	background: #000;
-	background: rgba(0,0,0,0.8);
+	background: rgba(0,0,0,0.9);
 }
 
 .CodeMirror-tooltip__tail {
@@ -28,7 +28,7 @@
 	position: relative;
 	margin: -5px auto;
 	background: #000;
-	background: rgba(0,0,0,0.8);
+	background: rgba(0,0,0,0.9);
 	
 	-webkit-transform: rotate(45deg);
 	-moz-transform: rotate(45deg);

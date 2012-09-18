@@ -114,16 +114,7 @@ CodeMirror.scenario = (function() {
 				editor.execCommand(options.command);
 				next();
 			}, options.beforeDelay);
-		},
-		
-		tooltip: function(options, editor, next, timer) {
-			options = makeOptions(options, 'text', {
-				text: '',
-				delay: 2000,
-				pos: 'caret'
-			});
 		}
-		
 	};
 	
 	/**
@@ -318,6 +309,7 @@ CodeMirror.scenario = (function() {
 		defineAction: function(name, fn) {
 			actionsDefinition[name] = fn;
 		},
-		makeOptions: makeOptions
+		makeOptions: makeOptions,
+		makePos: makePos
 	});
 })();
