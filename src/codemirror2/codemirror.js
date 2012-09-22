@@ -393,6 +393,11 @@ var CodeMirror = (function() {
             options.onGutterClick(instance, indexOf(gutterText.childNodes, n) + showingFrom, e);
           return e_preventDefault(e);
         }
+      
+      if (options.readOnly) {
+    	  e_preventDefault(e);
+    	  return;
+      }
 
       var start = posFromMouse(e);
 

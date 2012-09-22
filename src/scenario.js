@@ -495,6 +495,13 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 		onCursorActivity: function() {
 			editor.setLineClass(hlLine, null, null);
 			hlLine = editor.setLineClass(editor.getCursor().line, null, "activeline");
+		},
+		onKeyEvent: function(ed, evt) {
+			
+			if (ed.getOption('readOnly')) {
+				evt.stop();
+				return true;
+			}
 		}
 	}, editorOptions || {});
 	
