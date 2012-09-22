@@ -277,13 +277,13 @@ CodeMirror.scenario = (function() {
 				// revert from paused state
 				editor = editor || this._editor;
 				editor.focus();
-				console.log('revert from pause', editor);
 				var timerObj = null;
 				while (timerObj = this._timerQueue.shift()) {
 					requestTimer(timerObj.fn, timerObj.delay);
 				}
 				
 				this._state = STATE_PLAY;
+				this.trigger('resume');
 				return;
 			}
 			
@@ -574,7 +574,7 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 		.append(btnPlay)
 		.append(btnTry);
 	
-	sc.on('play', function() {
+	sc.on('play resume', function() {
 		btnPlay.html('\u275a\u275a Pause');
 	})
 	.on('pause stop', function() {
