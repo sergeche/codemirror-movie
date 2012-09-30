@@ -108,6 +108,22 @@ CodeMirror.scenario = (function() {
 				}
 			}, options.delay);
 		},
+
+		/**
+		 * Similar to "moveTo" function but with immediate cursor position update
+		 */
+		'jumpTo': function(options, editor, next, timer) {
+			options = makeOptions(options, 'pos', {
+				afterDelay: 200
+			});
+
+			if (!options.pos) {
+				throw 'No position specified for "jumpTo" action';
+			}
+			
+			editor.setCursor(makePos(options.pos));
+			timer(next, options.afterDelay);
+		},
 		
 		/**
 		 * Executes predefined CodeMirror command
