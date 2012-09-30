@@ -5,6 +5,7 @@
 CodeMirror.scenarioTooltip = (function() {
 	var instance = null;
 	var lastTween = null;
+	var sc = CodeMirror.scenario;
 	
 	var alignDefaults = {
 		/** CSS selector for getting popup tail */
@@ -19,34 +20,6 @@ CodeMirror.scenarioTooltip = (function() {
 		/** Min distance between popup left/right edge and its tail */
 		tailMargin: 11
 	};
-	
-	// detect CSS 3D Transforms for smoother animations 
-	var has3d = (function() {
-		var el = document.createElement('div');
-		var cssTransform = prefixed('transform');
-		if (cssTransform) {
-			el.style[cssTransform] = 'translateZ(0)';
-			return /translatez/i.test(el.style[cssTransform]); 
-		}
-		
-		return false;
-	})();
-	
-	// borrow CSS prefix detection from Modernizr
-	function prefixed(prop) {
-		var prefixes = ['Webkit', 'Moz', 'O', 'ms'];
-		var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1);
-		var props = (prop + ' ' + prefixes.join(ucProp + ' ') + ucProp).split(' ');
-		var el = document.createElement('div');
-		for (var i in props) {
-			var prop = props[i];
-			if (el.style[prop] !== undefined) {
-				return prop;
-			}
-		}
-
-		return null;
-	}
 	
 	function getViewportRect() {
 		var body = document.body;
@@ -118,8 +91,8 @@ CodeMirror.scenarioTooltip = (function() {
 	 */
 	function animateShow(elem, options) {
 		options = _.extend({}, alignDefaults, options || {});
-		var cssOrigin = prefixed('transformOrigin');
-		var cssTransform = prefixed('transform');
+		var cssOrigin = sc.prefixed('transformOrigin');
+		var cssTransform = sc.prefixed('transform');
 		var style = elem[0].style;
 
 		var tail = elem.find(options.tailSelector);
@@ -132,7 +105,7 @@ CodeMirror.scenarioTooltip = (function() {
 		yOrigin += 'px';
 
 		style[cssOrigin] = xOrigin + ' ' + yOrigin;
-		var prefix = has3d ? 'translateZ(0) ' : '';
+		var prefix = sc.has3d ? 'translateZ(0) ' : '';
 		
 		return lastTween = new Tween({
 			duration: 800,
@@ -178,11 +151,11 @@ CodeMirror.scenarioTooltip = (function() {
 			+ '<div class="CodeMirror-tooltip__content">' + text + '</div>' 
 			+ '<div class="CodeMirror-tooltip__tail"></div>' 
 			+ '</div>')
-			.css('transform', 'scale(0)')
+			.css(sc.prefixed('transform'), 'scale(0)')
 			.appendTo(document.body);
 		
-		alignPopupWithTail(instance, {position: pos, onComplete: callback});
-		animateShow(instance);
+		alignPopupWithTail(instance, {position: pos});
+		animateShow(instance, {onComplete: callback});
 	}
 	
 	function hideTooltip(callback) {
@@ -198,8 +171,7 @@ CodeMirror.scenarioTooltip = (function() {
 		}
 	}
 	
-	// XXX extend tooltip scenario with new actions
-	var sc = CodeMirror.scenario;
+	// XXX extend CodeMirror scenario with new actions
 	
 	/**
 	 * Resolves position where tooltip should point to

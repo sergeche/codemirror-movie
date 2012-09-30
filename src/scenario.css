@@ -160,3 +160,59 @@
 .CodeMirror-movie__btn-try {
 	float: right;
 }
+
+/* Prompt dialog */
+.CodeMirror-prompt {
+	position: absolute;
+	background: #fff;
+	padding: 20px;
+	width: 250px;
+	-webkit-box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	z-index: 100;
+	left: 50%;
+	top: 0;
+	margin-left: -135px;
+	font-family: sans-serif;
+}
+
+.CodeMirror-prompt__title {
+	font-size: 12px;
+	margin-bottom: 10px;
+}
+
+.CodeMirror-prompt__input  {
+	display: block;
+	width: 100%;
+	height: 30px;
+	padding: 4px 6px;
+	font-size: 13px;
+	line-height: 30px;
+	color: #555;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);	
+}
+	
+
+.CodeMirror-prompt__shade {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: #000;
+	background: rgba(0,0,0,0.5);
+	z-index: 99;
+}

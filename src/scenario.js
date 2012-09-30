@@ -14,6 +14,34 @@ CodeMirror.scenario = (function() {
 		afterDelay: 1000
 	};
 	
+	// detect CSS 3D Transforms for smoother animations 
+	var has3d = (function() {
+		var el = document.createElement('div');
+		var cssTransform = prefixed('transform');
+		if (cssTransform) {
+			el.style[cssTransform] = 'translateZ(0)';
+			return /translatez/i.test(el.style[cssTransform]); 
+		}
+		
+		return false;
+	})();
+	
+	// borrow CSS prefix detection from Modernizr
+	function prefixed(prop) {
+		var prefixes = ['Webkit', 'Moz', 'O', 'ms'];
+		var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1);
+		var props = (prop + ' ' + prefixes.join(ucProp + ' ') + ucProp).split(' ');
+		var el = document.createElement('div');
+		for (var i in props) {
+			var prop = props[i];
+			if (el.style[prop] !== undefined) {
+				return prop;
+			}
+		}
+
+		return null;
+	}
+	
 	var actionsDefinition = {
 		/**
 		 * Type-in passed text into current editor char-by-char
@@ -494,7 +522,9 @@ CodeMirror.scenario = (function() {
 			actionsDefinition[name] = fn;
 		},
 		makeOptions: makeOptions,
-		makePos: makePos
+		makePos: makePos,
+		has3d: has3d,
+		prefixed: prefixed
 	});
 })();
 

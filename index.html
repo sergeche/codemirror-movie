@@ -20,6 +20,7 @@
 <script src="./src/scenario.js"></script>
 <script src="./src/scenario.tooltip.js"></script>
 <script src="./src/scenario.outline.js"></script>
+<script src="./src/scenario.prompt.js"></script>
 
 <style type="text/css">
 .CodeMirror {
@@ -33,6 +34,14 @@
 </head>
 <body>
 	<h1>CodeMirror Scenario</h1>
+	
+	<!-- <div class="CodeMirror-prompt">
+		<div class="CodeMirror-prompt__title">Enter something</div>
+		<input class="CodeMirror-prompt__input" value="hello world" readonly="readonly" />
+	</div> -->
+	
+	<!-- <div class="CodeMirror-prompt__bg"></div> -->
+	
 	<!-- <div class="CodeMirror-tooltip CodeMirror-tooltip_below" style="top: 160px;left: 100px;">
 		<div class="CodeMirror-tooltip__content">Hello world</div>
 		<div class="CodeMirror-tooltip__tail"></div>
@@ -55,11 +64,12 @@
 		var scenario = CodeMirror.movie(
 			document.getElementById("code"), 
 			[
-				'type:ul>li.item$*4>a{Item $}',
-				'wait:1000',
-				'tooltip:Run “Expand Abbreviation” action (simply press Tab key)',
-				'wait:600',
-				'run:emmet.expand_abbreviation'
+				'prompt:ul>li.item$*4>a{Item $}'
+				//'type:ul>li.item$*4>a{Item $}',
+				//'wait:1000',
+				//'tooltip:Run “Expand Abbreviation” action (simply press Tab key)',
+				//'wait:600',
+				//'run:emmet.expand_abbreviation'
 			], 
 			{
 				'0': 'Enter abbreviation',
