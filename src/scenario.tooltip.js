@@ -80,8 +80,8 @@ CodeMirror.scenarioTooltip = (function() {
 		var pos = options.position;
 		var vp = getViewportRect();
 		
-		var width = popup.width();
-		var height = popup.height();
+		var width = popup[0].offsetWidth;
+		var height = popup[0].offsetHeight;
 		
 		var isTop;
 			
@@ -155,15 +155,13 @@ CodeMirror.scenarioTooltip = (function() {
 	 * @param {Object} options
 	 */
 	function animateHide(elem, options) {
-		var cssTransform = prefixed('transform');
 		var style = elem[0].style;
-		var prefix = has3d ? 'translateZ(0) ' : '';
 
 		return new Tween({
-			duration: 400,
-			easing: 'easeInBack',
+			duration: 200,
+			easing: 'linear',
 			step: function(pos) {
-				style[cssTransform] = prefix + 'scale(' + (1 - pos) + ')';
+				style.opacity = (1 - pos);
 			},
 			complete: function() {
 				elem.remove();

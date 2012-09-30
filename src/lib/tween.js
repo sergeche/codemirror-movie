@@ -36,15 +36,16 @@
 	
 	var defaults = {
 		duration: 500, // ms
-		easing: function(t, b, c, d) { // linear easing
-			return c * t / d + b;
-		},
+		easing: 'linear',
 		step: dummyFn,
 		complete: dummyFn,
 		autostart: true
 	};
 	
 	var easings = {
+		linear: function(t, b, c, d) {
+			return c * t / d + b;
+		},
 		easeInQuad: function(t, b, c, d) {
 			return c*(t/=d)*t + b;
 		},
