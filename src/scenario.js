@@ -109,7 +109,9 @@ CodeMirror.scenario = (function() {
 			}
 			
 			var curPos = editor.getCursor(true);
-			var targetPos = makePos(options.pos);
+			// reset selection, if exists
+			editor.setSelection(curPos, curPos);
+			var targetPos = makePos(options.pos, editor);
 			
 			if (options.immediate) {
 				editor.setCursor(targetPos);
@@ -119,19 +121,26 @@ CodeMirror.scenario = (function() {
 			var deltaLine = targetPos.line - curPos.line;
 			var deltaChar = targetPos.ch - curPos.ch;
 			var steps = Math.max(deltaChar, deltaLine);
-			var stepLine = deltaLine / steps;
-			var stepChar = deltaChar / steps;
+			// var stepLine = deltaLine / steps;
+			// var stepChar = deltaChar / steps;
+			var stepLine = deltaLine < 0 ? -1 : 1;
+			var stepChar = deltaChar < 0 ? -1 : 1;
+
 			timer(function perform() {
-				if (steps > 0) {
-					curPos.line += stepLine;
-					curPos.ch += stepChar;
-					editor.setCursor({
-						line: Math.round(curPos.line),
-						ch: Math.round(curPos.ch)
-					});
+				curPos = editor.getCursor(true);
+				if (steps > 0 && !(curPos.line == targetPos.line && curPos.ch == targetPos.ch)) {
+
+					if (curPos.line != targetPos.line)
+						curPos.line += stepLine;
+
+					if (curPos.ch != targetPos.ch)
+						curPos.ch += stepChar;
+
+					editor.setCursor(curPos);
 					steps--;
 					timer(perform, options.delay);
 				} else {
+					editor.setCursor(targetPos);
 					next();
 				}
 			}, options.delay);
@@ -149,7 +158,7 @@ CodeMirror.scenario = (function() {
 				throw 'No position specified for "jumpTo" action';
 			}
 			
-			editor.setCursor(makePos(options.pos));
+			editor.setCursor(makePos(options.pos, editor));
 			timer(next, options.afterDelay);
 		},
 		
@@ -162,14 +171,20 @@ CodeMirror.scenario = (function() {
 		 */
 		'run': function(options, editor, next, timer) {
 			options = makeOptions(options, 'command', {
-				beforeDelay: 0
+				beforeDelay: 500,
+				times: 1
 			});
 			
-			timer(function() {
+			var times = options.times;
+			timer(function perform() {
 				try {
 					editor.execCommand(options.command);
 				} catch (e) {}
-				next();
+				if (--times > 0) {
+					timer(perform, options.beforeDelay);
+				} else {
+					next();
+				}
 			}, options.beforeDelay);
 		},
 		

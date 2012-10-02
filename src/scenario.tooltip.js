@@ -200,7 +200,7 @@ CodeMirror.scenarioTooltip = (function() {
 	 */
 	sc.defineAction('tooltip', function(options, editor, next, timer) {
 		options = sc.makeOptions(options, 'text', {
-			wait: 3000,   // time to wait before hiding tooltip
+			wait: 4000,   // time to wait before hiding tooltip
 			pos: 'caret'  // position where tooltip should point to
 		});
 		
