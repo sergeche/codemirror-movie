@@ -178,7 +178,11 @@ CodeMirror.scenario = (function() {
 			var times = options.times;
 			timer(function perform() {
 				try {
-					editor.execCommand(options.command);
+					if (_.isFunction(options.command)) {
+						options.command(editor, options);
+					} else {
+						editor.execCommand(options.command);	
+					}
 				} catch (e) {}
 				if (--times > 0) {
 					timer(perform, options.beforeDelay);
