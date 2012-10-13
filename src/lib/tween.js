@@ -140,22 +140,31 @@
 			return;
 		}
 		
-		requestAnimationFrame(mainLoop);
-		
-		// leave only in-progress animations
 		var now = +new Date;
-		anims = _.filter(anims, function(tween) {
+		var filtered = [], tween, opt;
+
+		// do not use Array.filter() of _.filter() function
+		// since tween’s callbacks can add new animations
+		// in runtime. In this case, filter function will loose
+		// newly created animation
+		for (var i = 0; i < anims.length; i++) {
+			tween = anims[i];
 			var opt = tween.options;
 			if (tween.pos === 1 || tween.endTime <= now) {
 				opt.step.call(tween, tween.pos = 1);
 				tween.stop();
-				return false;
-			}
-			
-			tween.pos = opt.easing(now - tween.startTime, 0, 1, opt.duration);
-			opt.step.call(tween, tween.pos);
-			return true;
-		});
+			} else {
+				tween.pos = opt.easing(now - tween.startTime, 0, 1, opt.duration);
+				opt.step.call(tween, tween.pos);
+				filtered.push(tween);
+			}			
+		};
+	
+		anims = filtered;
+
+		if (anims.length) {
+			requestAnimationFrame(mainLoop);
+		}
 	}
 	
 	function addToQueue(tween) {
@@ -178,6 +187,8 @@
 		
 		if (!_.isFunction(this.options.easing))
 			throw 'Easing should be a function';
+
+		this._id = _.uniqueId('tw');
 		
 		if (this.options.autostart)
 			this.start();
@@ -202,6 +213,10 @@
 			this.animating = false;
 			this.options.complete();
 		}
+	};
+
+	Tween.__getAnims = function() {
+		return anims;
 	};
 	
 	global.Tween = Tween;
