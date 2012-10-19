@@ -134,7 +134,8 @@
 .CodeMirror-movie__splash-text {
 	font-size: 4em;
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	position: relative;
+	position: absolute;
+	width: 100%;
 	text-align: center;
 	top: 50%;
 	margin-top: -1.2em;
