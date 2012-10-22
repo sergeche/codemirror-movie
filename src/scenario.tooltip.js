@@ -32,8 +32,8 @@ CodeMirror.scenarioTooltip = (function() {
 		return {
 			top: scrollTop  - clientTop,
 			left: scrollLeft - clientLeft,
-			width: window.innerWidth,
-			height: window.innerHeight
+			width: $(window).width(),
+			height: $(window).height()
 		};
 	}
 	

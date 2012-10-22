@@ -39,7 +39,7 @@ CodeMirror.scenario = (function() {
 			}
 		}
 
-		return null;
+		return prop;
 	}
 	
 	var actionsDefinition = {
@@ -571,6 +571,8 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 	}, editorOptions || {});
 	
 	var initialValue = editorOptions.value || $(editorTarget).val() || '';
+	var ios = /AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent);
+	var mac = ios || /Mac/.test(navigator.platform);
 	
 	// normalize line endings
 	initialValue = initialValue.replace(/\r?\n/g, '\n');
@@ -602,6 +604,14 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 			.addClass('CodeMirror-movie_with-outline')
 			.append(CodeMirror.scenarioOutline(outline, sc));
 	}
+
+	// Windows has poor Unicode symbols support
+	var buttonLabels = {
+		'play': (mac ? '▶ ' : '') + 'Play demo',
+		'pause': (mac ? '\u275a\u275a ' : '') + 'Pause',
+		'play_again': (mac ? '▶ ' : '') + 'Play again',
+		'try_yourself': 'Try it yourself'
+	};
 	
 	// add splash screen
 	var splash = $('<div class="CodeMirror-movie__splash">' 
@@ -621,13 +631,13 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 	$w.append(splash);
 	
 	sc.on('play', removeSplash);
-	
+
 	// create toolbar
-	var btnPlay = $('<button class="btn btn-mini btn-primary CodeMirror-movie__btn-play">▶ Play demo</button>')
+	var btnPlay = $('<button class="btn btn-mini btn-primary CodeMirror-movie__btn-play">' + buttonLabels.play +'</button>')
 		.click(function() {
 			sc.toggle();
 		});
-	var btnTry = $('<button class="btn btn-mini btn-success CodeMirror-movie__btn-try">Try it yourself</button>')
+	var btnTry = $('<button class="btn btn-mini btn-success CodeMirror-movie__btn-try">' + buttonLabels.try_yourself +'</button>')
 		.click(function() {
 			sc.stop();
 			removeSplash();
@@ -640,10 +650,10 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 		.append(btnTry);
 	
 	sc.on('play resume', function() {
-		btnPlay.html('\u275a\u275a Pause');
+		btnPlay.html(buttonLabels.pause);
 	})
 	.on('pause stop', function() {
-		btnPlay.html('▶ Play again');
+		btnPlay.html(buttonLabels.play_again);
 	});
 	
 	$w.before(toolbar);
