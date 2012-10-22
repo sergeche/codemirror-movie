@@ -205,12 +205,13 @@ CodeMirror.scenarioTooltip = (function() {
 		});
 		
 		var pos = resolvePosition(options.pos, editor);
-		showTooltip(options.text, pos);
-		timer(function() {
-			hideTooltip(function() {
-				timer(next);
-			});
-		}, options.wait);
+		showTooltip(options.text, pos, function() {
+			timer(function() {
+				hideTooltip(function() {
+					timer(next);
+				});
+			}, options.wait);
+		});
 	});
 	
 	/**

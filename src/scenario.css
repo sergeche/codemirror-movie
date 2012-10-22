@@ -1,7 +1,7 @@
 /* Tooltip */
 .CodeMirror-tooltip {
 	position: absolute;
-	font-family: sans-serif;
+	font-family: arial, sans-serif;
 	color: #fff;
 	max-width: 15em;
 	font-size: 12px;
