@@ -595,6 +595,9 @@ CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
 		pos: editor.getCursor(true)
 	};
 	
+	if (editorOptions.height) {
+		editor,getWrapperElement().style.height = editorOptions.height + 'px';
+	}
 	
 	var $w = $(editor.getWrapperElement()).addClass('CodeMirror-movie');
 	
