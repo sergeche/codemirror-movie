@@ -310,6 +310,10 @@
 	 * @returns {Array}
 	 */
 	function ar(obj) {
+		if (obj.length === +obj.length) {
+			return _.toArray(obj);
+		}
+		
 		return _.isArray(obj) ? obj : [obj];
 	}
 	
@@ -364,13 +368,9 @@
 		 * @return {Element}
 		 */
 		removeClass: function(elem, className) {
+			var reSplit = /\s+/g;
 			_.each(ar(elem), function(el) {
-				var elemClass = el.className || '';
-				_.each(className.split(/\s+/g), function(c) {
-					elemClass = elemClass.replace(new RegExp('\\b' + c + '\\b'), '');
-				});
-				
-				el.className = this.trim(elemClass);
+				el.className = _.difference((el.className || '').split(reSplit), className.split(/\s+/g)).join(' ');
 			}, this);
 			
 			return elem;
