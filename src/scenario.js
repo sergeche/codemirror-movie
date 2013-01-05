@@ -1,7 +1,8 @@
 CodeMirror.scenario = (function() {
-	var STATE_IDLE  = 0;
-	var STATE_PLAY  = 1;
-	var STATE_PAUSE = 2;
+	"use strict";
+	var STATE_IDLE  = 'idle';
+	var STATE_PLAY  = 'play';
+	var STATE_PAUSE = 'pause';
 	
 	// Regular expression used to split event strings
 	var eventSplitter = /\s+/;
@@ -20,7 +21,7 @@ CodeMirror.scenario = (function() {
 		var cssTransform = prefixed('transform');
 		if (cssTransform) {
 			el.style[cssTransform] = 'translateZ(0)';
-			return /translatez/i.test(el.style[cssTransform]); 
+			return (/translatez/i).test(el.style[cssTransform]); 
 		}
 		
 		return false;
@@ -32,14 +33,15 @@ CodeMirror.scenario = (function() {
 		var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1);
 		var props = (prop + ' ' + prefixes.join(ucProp + ' ') + ucProp).split(' ');
 		var el = document.createElement('div');
+		var p = null;
 		for (var i in props) {
-			var prop = props[i];
-			if (el.style[prop] !== undefined) {
-				return prop;
+			p = props[i];
+			if (el.style[p] !== undefined) {
+				return p;
 			}
 		}
 
-		return prop;
+		return p;
 	}
 	
 	var actionsDefinition = {
@@ -61,8 +63,9 @@ CodeMirror.scenario = (function() {
 				pos: null  // initial position where to start typing
 			});
 			
-			if (!options.text)
+			if (!options.text) {
 				throw 'No text provided for "type" action';
+			}
 			
 			if (options.pos !== null) {
 				editor.setCursor(makePos(options.pos, editor));
@@ -73,10 +76,11 @@ CodeMirror.scenario = (function() {
 			timer(function perform() {
 				var ch = chars.shift();
 				editor.replaceSelection(ch, 'end');
-				if (chars.length)
+				if (chars.length) {
 					timer(perform, options.delay);
-				else
+				} else {
 					next();
+				}
 			}, options.delay);
 		},
 		
@@ -92,7 +96,7 @@ CodeMirror.scenario = (function() {
 				timeout: 100
 			});
 			
-			timer(next, parseInt(options.timeout));
+			timer(next, parseInt(options.timeout, 10));
 		},
 		
 		/**
@@ -130,11 +134,13 @@ CodeMirror.scenario = (function() {
 				curPos = editor.getCursor(true);
 				if (steps > 0 && !(curPos.line == targetPos.line && curPos.ch == targetPos.ch)) {
 
-					if (curPos.line != targetPos.line)
+					if (curPos.line != targetPos.line) {
 						curPos.line += stepLine;
+					}
 
-					if (curPos.ch != targetPos.ch)
+					if (curPos.ch != targetPos.ch) {
 						curPos.ch += stepChar;
+					}
 
 					editor.setCursor(curPos);
 					steps--;
@@ -219,9 +225,8 @@ CodeMirror.scenario = (function() {
 	function parseActionCall(data) {
 		if (_.isString(data)) {
 			var parts = data.split(':');
-			var name = parts.shift();
 			return {
-				name: name,
+				name: parts.shift(),
 				options: parts.join(':')
 			};
 		} else {
@@ -275,10 +280,11 @@ CodeMirror.scenario = (function() {
 	}
 	
 	function requestTimer(fn, delay) {
-		if (!delay)
+		if (!delay) {
 			fn();
-		else
+		} else {
 			return setTimeout(fn, delay);
+		}
 	}
 	
 	// XXX add 'revert' action to CodeMirror to restore original text and position
@@ -317,8 +323,9 @@ CodeMirror.scenario = (function() {
 	
 	Scenario.prototype = {
 		_setup: function(editor) {
-			if (!editor && this._editor)
+			if (!editor && this._editor) {
 				editor = this._editor;
+			}
 			
 			editor.execCommand('revert');
 			return editor;
@@ -369,7 +376,7 @@ CodeMirror.scenario = (function() {
 				if (action.name in actionsDefinition) {
 					actionsDefinition[action.name].call(that, action.options, editor, next, timer);
 				} else {
-					throw 'No such action: ' + actionName;
+					throw 'No such action: ' + action.name;
 				}
 			};
 			
@@ -400,6 +407,17 @@ CodeMirror.scenario = (function() {
 			}
 		},
 		
+		/**
+		 * Returns current playback state
+		 * @return {String}
+		 */
+		state: function() {
+			return this._state;
+		},
+		
+		/**
+		 * Toggle playback of movie scenario
+		 */
 		toggle: function() {
 			if (this._state === STATE_PLAY) {
 				this.pause();
@@ -431,8 +449,9 @@ CodeMirror.scenario = (function() {
 		 */
 		on: function(events, callback, context) {
 			var calls, event, node, tail, list;
-			if (!callback)
+			if (!callback) {
 				return this;
+			}
 			
 			events = events.split(eventSplitter);
 			calls = this._callbacks || (this._callbacks = {});
@@ -468,8 +487,10 @@ CodeMirror.scenario = (function() {
 			var event, calls, node, tail, cb, ctx;
 
 			// No events, or removing *all* events.
-			if (!(calls = this._callbacks))
+			if (!(calls = this._callbacks)) {
 				return;
+			}
+			
 			if (!(events || callback || context)) {
 				delete this._callbacks;
 				return this;
@@ -481,8 +502,10 @@ CodeMirror.scenario = (function() {
 			while (event = events.shift()) {
 				node = calls[event];
 				delete calls[event];
-				if (!node || !(callback || context))
+				if (!node || !(callback || context)) {
 					continue;
+				}
+				
 				// Create a new list, omitting the indicated callbacks.
 				tail = node.tail;
 				while ((node = node.next) !== tail) {
@@ -506,8 +529,10 @@ CodeMirror.scenario = (function() {
 		 */
 		trigger: function(events) {
 			var event, node, calls, tail, args, all, rest;
-			if (!(calls = this._callbacks))
+			if (!(calls = this._callbacks)) {
 				return this;
+			}
+			
 			all = calls.all;
 			events = events.split(eventSplitter);
 			rest = slice.call(arguments, 1);
@@ -546,120 +571,3 @@ CodeMirror.scenario = (function() {
 		prefixed: prefixed
 	});
 })();
-
-/**
- * Helper function that set-up movie instance
- */
-CodeMirror.movie = function(editorTarget, scenario, outline, editorOptions) {
-	editorOptions = _.extend({
-		theme: 'espresso',
-		mode : 'text/html',
-		indentWithTabs: true,
-		tabSize: 4,
-		lineNumbers : true,
-		onCursorActivity: function() {
-			editor.setLineClass(hlLine, null, null);
-			hlLine = editor.setLineClass(editor.getCursor().line, null, "activeline");
-		},
-		onKeyEvent: function(ed, evt) {
-			
-			if (ed.getOption('readOnly')) {
-				evt.stop();
-				return true;
-			}
-		}
-	}, editorOptions || {});
-	
-	var initialValue = editorOptions.value || $(editorTarget).val() || '';
-	var ios = /AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent);
-	var mac = ios || /Mac/.test(navigator.platform);
-	
-	// normalize line endings
-	initialValue = initialValue.replace(/\r?\n/g, '\n');
-	
-	var initialPos = initialValue.indexOf('|');
-	initialValue = initialValue.replace(/\|/g, '');
-	$(editorTarget).val(initialValue);
-	
-	var editor = CodeMirror.fromTextArea(editorTarget, editorOptions);
-	var hlLine = editor.setLineClass(0, 'activeline');
-	if (initialPos != -1) {
-		// move caret to initial position
-		var pos = editor.posFromIndex(initialPos);
-		editor.setCursor(pos);
-	}
-	
-	// save initial data so we can revert to it later
-	editor.__initial = {
-		content: initialValue,
-		pos: editor.getCursor(true)
-	};
-	
-	if (editorOptions.height) {
-		editor,getWrapperElement().style.height = editorOptions.height + 'px';
-	}
-	
-	var $w = $(editor.getWrapperElement()).addClass('CodeMirror-movie');
-	
-	var sc = CodeMirror.scenario(scenario, editor);
-	if (outline) {
-		$w
-			.addClass('CodeMirror-movie_with-outline')
-			.append(CodeMirror.scenarioOutline(outline, sc));
-	}
-
-	// Windows has poor Unicode symbols support
-	var buttonLabels = {
-		'play': (mac ? '▶ ' : '') + 'Play demo',
-		'pause': (mac ? '\u275a\u275a ' : '') + 'Pause',
-		'play_again': (mac ? '▶ ' : '') + 'Play again',
-		'try_yourself': 'Try it yourself'
-	};
-	
-	// add splash screen
-	var splash = $('<div class="CodeMirror-movie__splash">' 
-			+ '<div class="CodeMirror-movie__splash-text"><span class="CodeMirror-movie__splash-play-btn">▶</span> Watch demo</div>' 
-			+ '</div>')
-			.click(function() {
-				sc.play();
-			});
-	
-	var removeSplash = function() {
-		if (splash) {
-			splash.remove();
-			splash = null;
-		}
-	};
-	
-	$w.append(splash);
-	
-	sc.on('play', removeSplash);
-
-	// create toolbar
-	var btnPlay = $('<button class="btn btn-mini btn-primary CodeMirror-movie__btn-play">' + buttonLabels.play +'</button>')
-		.click(function() {
-			sc.toggle();
-		});
-	var btnTry = $('<button class="btn btn-mini btn-success CodeMirror-movie__btn-try">' + buttonLabels.try_yourself +'</button>')
-		.click(function() {
-			sc.stop();
-			removeSplash();
-			editor.execCommand('revert');
-			editor.focus();
-		});
-	
-	var toolbar = $('<div class="CodeMirror-movie__toolbar"></div>')
-		.append(btnPlay)
-		.append(btnTry);
-	
-	sc.on('play resume', function() {
-		btnPlay.html(buttonLabels.pause);
-	})
-	.on('pause stop', function() {
-		btnPlay.html(buttonLabels.play_again);
-	});
-	
-	$w.before(toolbar);
-	
-	return sc;
-};

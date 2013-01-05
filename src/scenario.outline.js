@@ -3,14 +3,14 @@
  * action is performed
  */
 CodeMirror.scenarioOutline = (function() {
-	
+	"use strict";
 	var defaultOptions = {
 		wrapperTemplate: '<ul class="CodeMirror-outline"><%= content %></ul>',
 		itemTemplate: '<li data-action-id="<%= id %>" class="CodeMirror-outline__item"><%= title %></li>',
-		itemSelector: '.CodeMirror-outline__item',
+		itemClass: 'CodeMirror-outline__item',
 		selectedClass: 'CodeMirror-outline__item_selected'
 	};
-	
+		
 	/**
 	 * @param {Object} hints
 	 * @param {Scenario} scenario
@@ -21,7 +21,7 @@ CodeMirror.scenarioOutline = (function() {
 		
 		var hintKeys = _.keys(hints);
 		hintKeys.sort(function(a, b) {
-			return parseInt(a) - parseInt(b);
+			return parseInt(a, 10) - parseInt(b, 10);
 		});
 		
 		var itemTemplate = _.template(options.itemTemplate);
@@ -32,27 +32,30 @@ CodeMirror.scenarioOutline = (function() {
 			});
 		});
 		
-		var $el = $(_.template(options.wrapperTemplate, {
+		var el = _.dom.toDOM(_.template(options.wrapperTemplate, {
 			content: items.join('')
 		}));
 		
 		if (options.target) {
-			$(options.target).append($el);
+			options.target.appendChild(el);
 		}
 		
 		scenario
 			.on('action', function(id) {
-				var items = $el.find(options.itemSelector);
-				var matchedItem = items.filter('[data-action-id="' + id + '"]');
-				if (matchedItem.length) {
-					items.removeClass(options.selectedClass);
-					matchedItem.addClass(options.selectedClass);
+				var items = _.dom.getByClass(options.itemClass, el);
+				var matchedItem = _.find(items, function(elem) {
+					return elem.getAttribute('data-action-id') == id;
+				});
+				
+				if (matchedItem) {
+					_.dom.removeClass(items, options.selectedClass);
+					_.dom.addClass(matchedItem, options.selectedClass);
 				}
 			})
 			.on('stop', function() {
-				$el.find(options.itemSelector).removeClass(options.selectedClass);;
+				_.dom.removeClass(_.dom.getByClass(options.itemClass, el), options.selectedClass);
 			});
 		
-		return $el;
+		return el;
 	};
 })();

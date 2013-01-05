@@ -2,19 +2,24 @@
  * Shows fake prompt dialog with interactive value typing
  */
 CodeMirror.scenarioPrompt = (function() {
+	"use strict";
 	var dialogInstance = null;
 	var bgInstance = null;
+	var lastTween = null;
 	
 	var sc = CodeMirror.scenario;
 	
 	function showPrompt(text, target, callback) {
 		hidePrompt();
-		dialogInstance = $('<div class="CodeMirror-prompt">' 
-			+ '<div class="CodeMirror-prompt__title">' + text + '</div>' 
-			+ '<input type="text" name="prompt" class="CodeMirror-prompt__input" readonly="readonly" />' 
-			+ '</div>')
-			.appendTo(target);
-		bgInstance = $('<div class="CodeMirror-prompt__shade"></div>').appendTo(target);
+		dialogInstance = _.dom.toDOM('<div class="CodeMirror-prompt">' +
+			'<div class="CodeMirror-prompt__title">' + text + '</div>' + 
+			'<input type="text" name="prompt" class="CodeMirror-prompt__input" readonly="readonly" />' + 
+			'</div>');
+		bgInstance = _.dom.toDOM('<div class="CodeMirror-prompt__shade"></div>');
+		
+		target.appendChild(dialogInstance);
+		target.appendChild(bgInstance);
+		
 		animateShow(dialogInstance, bgInstance, {onComplete: callback});
 	}
 	
@@ -32,16 +37,16 @@ CodeMirror.scenarioPrompt = (function() {
 	}
 	
 	/**
-	 * @param {jQuery} dialog
-	 * @param {jQuery} bg
+	 * @param {Element} dialog
+	 * @param {Element} bg
 	 * @param {Object} options 
 	 */
 	function animateShow(dialog, bg, options) {
 		options = options || {};
 		var cssTransform = sc.prefixed('transform');
-		var dialogStyle = dialog[0].style;
-		var bgStyle = bg[0].style;
-		var height = dialog[0].offsetHeight;
+		var dialogStyle = dialog.style;
+		var bgStyle = bg.style;
+		var height = dialog.offsetHeight;
 		var tmpl = _.template(sc.has3d ? 'translate3d(0, <%= pos %>, 0)' : 'translate(0, <%= pos %>)');
 
 		bgStyle.opacity = 0;
@@ -70,14 +75,14 @@ CodeMirror.scenarioPrompt = (function() {
 	}
 
 	/**
-	 * @param {jQuery} dialog
-	 * @param {jQuery} bg
+	 * @param {Element} dialog
+	 * @param {Element} bg
 	 * @param {Object} options
 	 */
 	function animateHide(dialog, bg, options) {
-		var dialogStyle = dialog[0].style;
-		var bgStyle = bg[0].style;
-		var height = dialog[0].offsetHeight;
+		var dialogStyle = dialog.style;
+		var bgStyle = bg.style;
+		var height = dialog.offsetHeight;
 		var cssTransform = sc.prefixed('transform');
 		var tmpl = _.template(sc.has3d ? 'translate3d(0, <%= pos %>, 0)' : 'translate(0, <%= pos %>)');
 
@@ -88,8 +93,7 @@ CodeMirror.scenarioPrompt = (function() {
 				bgStyle.opacity = 1 - pos;
 			},
 			complete: function() {
-				dialog.remove();
-				bg.remove();
+				_.dom.remove([dialog, bg]);
 				if (options.onComplete) {
 					options.onComplete(dialog, bg);
 				}
@@ -101,10 +105,11 @@ CodeMirror.scenarioPrompt = (function() {
 		var chars = options.text.split('');
 		timer(function perform() {
 			target.value += chars.shift();
-			if (chars.length)
+			if (chars.length) {
 				timer(perform, options.delay);
-			else
+			} else {
 				next();
+			}
 		}, options.delay);
 	}
 	
@@ -119,7 +124,7 @@ CodeMirror.scenarioPrompt = (function() {
 		
 		showPrompt(options.title, editor.getWrapperElement(), function(dialog) {
 			timer(function() {
-				typeText(dialog.find('.CodeMirror-prompt__input')[0], options, timer, function() {
+				typeText(_.dom.getByClass('CodeMirror-prompt__input', dialog)[0], options, timer, function() {
 					timer(function() {
 						hidePrompt(next);
 					}, options.hideDelay);

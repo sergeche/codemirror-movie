@@ -5,8 +5,6 @@
 <title>CodeMirror Scenario</title>
 <link rel="stylesheet" href="./src/codemirror2/codemirror.css">
 <link rel="stylesheet" href="./src/scenario.css">
-<link rel="stylesheet" href="./src/cm-espresso.css">
-<link rel="stylesheet" href="./src/bootstrap/css/bootstrap.min.css">
 
 <script src="./src/codemirror2/codemirror.js"></script>
 <script src="./src/codemirror2/css.js"></script>
@@ -14,13 +12,14 @@
 
 <script src="./src/lib/emmet.min.js"></script>
 <!-- <script src="./src/lib/underscore.js"></script> -->
-<script src="./src/lib/zepto.min.js"></script>
+<!-- <script src="./src/lib/zepto.min.js"></script> -->
 <script src="./src/lib/tween.js"></script>
-
+<script src="./src/dom.js"></script>
 <script src="./src/scenario.js"></script>
 <script src="./src/scenario.tooltip.js"></script>
 <script src="./src/scenario.outline.js"></script>
 <script src="./src/scenario.prompt.js"></script>
+<script src="./src/movie.js"></script>
 
 <style type="text/css">
 .CodeMirror {
@@ -59,28 +58,32 @@
 	&lt;/header&gt;
 &lt;/body&gt;
 &lt;/html&gt;
+~~~
+prompt: Hello world
+type: ul>li.item$*4>a{Item $}
+wait: 1000
+tooltip: Run “Expand Abbreviation” action (simply press Tab key) ::: Expand Abbreviation (Cmd-E)
+wait: 600
+run: emmet.expand_abbreviation
 </textarea>
+	<button style="font-size: 2em;margin: 10px auto;display: block;">Play</button>
 	<script>
-		var scenario = CodeMirror.movie(
-			document.getElementById("code"), 
-			[
-				'prompt:ul>li.item$*4>a{Item $}'
-				//'type:ul>li.item$*4>a{Item $}',
-				//'wait:1000',
-				//'tooltip:Run “Expand Abbreviation” action (simply press Tab key)',
-				//'wait:600',
-				//'run:emmet.expand_abbreviation'
-			], 
-			{
-				'0': 'Enter abbreviation',
-				'3': 'Run “Expand Abberviation“ action'
-			});
-
-		// scenario.play();
+		var scenario = CodeMirror.movie('code');
 		
-		/* $(document).click(function(evt) {
-			CodeMirror.scenarioTooltip.show('Hello world', {x: evt.pageX, y: evt.pageY});
-		}); */
+		var btn = document.getElementsByTagName('button')[0];
+		btn.onclick = function() {
+			if (scenario.state() == 'play') {
+				scenario.pause();
+				this.innerHTML = 'Play';
+			} else {
+				scenario.play();
+				this.innerHTML = 'Pause';
+			}
+		};
+		
+		scenario.on('stop', function(name) {
+			btn.innerHTML = 'Play';
+		});
 	</script>
 </body>
 </html>
