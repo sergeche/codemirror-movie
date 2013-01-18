@@ -570,7 +570,7 @@ CodeMirror.scenario = (function() {
 		'moveTo': function(options, editor, next, timer) {
 			options = makeOptions(options, 'pos', {
 				delay: 80,
-				immediate: false
+				immediate: false // TODO: remove, use delay: 0 instead
 			});
 			
 			if (!options.pos) {
@@ -582,7 +582,7 @@ CodeMirror.scenario = (function() {
 			editor.setSelection(curPos, curPos);
 			var targetPos = makePos(options.pos, editor);
 			
-			if (options.immediate) {
+			if (options.immediate || !options.delay) {
 				editor.setCursor(targetPos);
 				next();
 			}
@@ -1532,7 +1532,7 @@ CodeMirror.scenarioPrompt = (function() {
 		 * String or regexp used to separate sections of movie definition, e.g.
 		 * default value, scenario and editor options
 		 */
-		sectionSeparator: '~~~',
+		sectionSeparator: '@@@',
 		
 		/** Regular expression to extract outline from scenario line */
 		outlineSeparator: /\s+:::\s+(.+)$/,
@@ -1691,6 +1691,10 @@ CodeMirror.scenarioPrompt = (function() {
 	 */
 	CodeMirror.movie = function(target, movieOptions, editorOptions) {
 		var hlLine = null;
+
+		if (_.isString(target)) {
+			target = document.getElementById(target);
+		}
 		
 		movieOptions = _.extend({}, defaultOptions, movieOptions || {});
 		
@@ -1712,10 +1716,6 @@ CodeMirror.scenarioPrompt = (function() {
 			}
 		}, editorOptions || {});
 		
-		if (_.isString(target)) {
-			target = document.getElementById(target);
-		}
-		
 		var initialValue = editorOptions.value || target.value || '';
 		
 		if (movieOptions.parse) {
@@ -1724,6 +1724,14 @@ CodeMirror.scenarioPrompt = (function() {
 			if (movieOptions.editorOptions) {
 				_.extend(editorOptions, movieOptions.editorOptions);
 			}
+
+			// read CM options from given textarea
+			var cmAttr = /^data\-cm\-(.+)$/i;
+			_.each(target.attributes, function(attr) {
+				if (cmAttr.test(attr.name)) {
+					editorOptions[RegExp.$1] = attr.value;
+				}
+			});
 		}
 		
 		// normalize line endings

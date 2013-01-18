@@ -105,7 +105,7 @@ CodeMirror.scenario = (function() {
 		'moveTo': function(options, editor, next, timer) {
 			options = makeOptions(options, 'pos', {
 				delay: 80,
-				immediate: false
+				immediate: false // TODO: remove, use delay: 0 instead
 			});
 			
 			if (!options.pos) {
@@ -117,7 +117,7 @@ CodeMirror.scenario = (function() {
 			editor.setSelection(curPos, curPos);
 			var targetPos = makePos(options.pos, editor);
 			
-			if (options.immediate) {
+			if (options.immediate || !options.delay) {
 				editor.setCursor(targetPos);
 				next();
 			}

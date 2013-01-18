@@ -49,7 +49,7 @@
 		 * String or regexp used to separate sections of movie definition, e.g.
 		 * default value, scenario and editor options
 		 */
-		sectionSeparator: '~~~',
+		sectionSeparator: '@@@',
 		
 		/** Regular expression to extract outline from scenario line */
 		outlineSeparator: /\s+:::\s+(.+)$/,
@@ -208,6 +208,10 @@
 	 */
 	CodeMirror.movie = function(target, movieOptions, editorOptions) {
 		var hlLine = null;
+
+		if (_.isString(target)) {
+			target = document.getElementById(target);
+		}
 		
 		movieOptions = _.extend({}, defaultOptions, movieOptions || {});
 		
@@ -229,10 +233,6 @@
 			}
 		}, editorOptions || {});
 		
-		if (_.isString(target)) {
-			target = document.getElementById(target);
-		}
-		
 		var initialValue = editorOptions.value || target.value || '';
 		
 		if (movieOptions.parse) {
@@ -241,6 +241,14 @@
 			if (movieOptions.editorOptions) {
 				_.extend(editorOptions, movieOptions.editorOptions);
 			}
+
+			// read CM options from given textarea
+			var cmAttr = /^data\-cm\-(.+)$/i;
+			_.each(target.attributes, function(attr) {
+				if (cmAttr.test(attr.name)) {
+					editorOptions[RegExp.$1] = attr.value;
+				}
+			});
 		}
 		
 		// normalize line endings

@@ -4,22 +4,31 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		frontendConfig: {
-			srcWebroot: './src',
-			webroot: './dist'
-		},
-
 		lint: {
 			files: ['grunt.js', 'src/*.js']
 		},
 
 		frontend: {
-			'css-file': {
-				'./dist/cm-movie.css': files.css
-			},
-			js: {
-				'./dist/cm-movie.min.js': files.js,
-				'./dist/cm-movie-full.min.js': files.jsFull
+			main: {
+				options: {
+					srcWebroot: './src',
+					webroot: './dist'
+				},
+				'css-file': {
+					'./dist/cm-movie.css': files.css
+				},
+				js: {
+					'./dist/cm-movie.min.js': files.js,
+					'./dist/cm-movie-full.min.js': files.jsFull
+				}
+			}
+		},
+
+		copy: {
+			vendor: {
+				files: {
+					'./dist/vendor/': ['./src/codemirror2/*.*']	
+				}
 			}
 		},
 
@@ -70,5 +79,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 
 	// Default task.
-	grunt.registerTask('default', 'lint concat frontend');
+	grunt.registerTask('default', 'lint concat frontend copy');
 };
