@@ -121,6 +121,13 @@ Some actions can accept `Position` object which can contain one of the following
 * `line:char` (String) — line and character-in-line indexes (starting from 0).
 * `caret` (String) — current caret position.
 
+## Passing CodeMirror options
+
+To pass CodeMirror editor options (like syntax name), simply add `data-cm-*` attributes to `<textarea>` source element. For example, to set CSS syntax highlighting, your textarea may look like this:
+
+	<textarea data-cm-mode="text/css">
+
+
 ## Outline ##
 
 The movie outline is a sidebar with some useful hints about movie key points. Every time a specified movie command runs, the corresponding outline item is highlighted.
