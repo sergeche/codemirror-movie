@@ -119,7 +119,7 @@ CodeMirror.scenarioTooltip = (function() {
 				style[cssTransform] = prefix + 'scale(' + pos + ')';
 			},
 			complete: function() {
-//				style[cssTransform] = 'none';
+				style[cssTransform] = 'none';
 				lastTween = null;
 				if (options.onComplete) {
 					options.onComplete(elem);
