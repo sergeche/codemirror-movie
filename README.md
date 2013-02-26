@@ -80,7 +80,7 @@ Alias to `moveTo` command with `delay: 0` option.
 
 #### run ####
 
-Performs given [CodeMirror command](https://github.com/marijnh/CodeMirror/blob/master/lib/codemirror.js#L3021).
+Performs given [CodeMirror command](https://github.com/marijnh/CodeMirror/blob/v3.0/lib/codemirror.js#L2938).
 
 * **`command`** (String): command name to execute.
 * `beforeDelay` (Number): delay before actual command execution, milliseconds. Default is `500`, which improves user experience.
@@ -88,7 +88,7 @@ Performs given [CodeMirror command](https://github.com/marijnh/CodeMirror/blob/m
 
 #### select ####
 
-* **`to`** (Position): the selection end (see “Position object” below for description).
+* **`to`** (Position): the selection end (see “[Position object](#position-object)” below for description).
 * `from` (Position): the selection start. Defaults to current caret position.
 
 #### tooltip ####
@@ -97,11 +97,11 @@ Displays tooltip with given text, waits for a specified delay and automatically 
 
 * **`text`** (String): tooltip text, may contain HTML.
 * `wait` (Number): Number of milliseconds to wait before hiding tooltip.
-* `pos` (Position): position where tooltip should be displayed  (see “Position object” below for description). Default to current caret position.
+* `pos` (Position): position where tooltip should be displayed  (see “[Position object](#position-object)” below for description). Default to current caret position.
 
 #### showTooltip ####
 
-The same as `tooltip` command, but doesn’t hide tooltip, explicitly use `hideTooltip` command to do so. You should use these commands in cases when you want to display a tooltip, execute some over commands and the hide it.
+The same as `tooltip` command, but doesn’t hide tooltip, explicitly call `hideTooltip` command to do so. You should use these commands in cases when you want to display a tooltip, execute some other commands and then hide tooltip.
 
 #### prompt ####
 
