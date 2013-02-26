@@ -59,7 +59,7 @@ Options:
 
 * **`text`** (String): text to type
 * `delay` (Number): delay between character typing, milliseconds. Default is 60.
-* `pos` (Position): initial position where to start typing (see “Position object” below for description).
+* `pos` (Position): initial position where to start typing (see “[Position object](#position-object)” below for description).
 
 #### wait ####
 
@@ -71,7 +71,7 @@ Wait for a specified amount of time and executes next command
 
 Moves caret to given position. By default, this action calculates optimal horizontal and vertical offsets and moves caret in “natural” manner, character-by-character.
 
-* **`pos`** (Position): designated caret position (see “Position object” below for description).
+* **`pos`** (Position): designated caret position (see “[Position object](#position-object)” below for description).
 * `delay` (Number): delay between caret movements, milliseconds. Setting this option to `0` will move caret immediately to designated position.
 
 #### jumpTo ####
