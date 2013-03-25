@@ -190,15 +190,32 @@ CodeMirror.scenarioTooltip = (function() {
 	function resolvePosition(pos, editor) {
 		if (pos === 'caret') {
 			// get absolute position of current caret position
-			return editor.cursorCoords(true);
+			return sanitizeCaretPos(editor.cursorCoords(true));
 		}
 		
 		if (pos && 'x' in pos && 'y' in pos) {
 			// passed absolute coordinates
 			return pos;
 		}
+
+		if (pos && 'left' in pos && 'top' in pos) {
+			// passed absolute coordinates
+			return sanitizeCaretPos(pos);
+		}
 		
-		return editor.charCoords(sc.makePos(pos));
+		return sanitizeCaretPos(editor.charCoords(sc.makePos(pos)));
+	}
+
+	function sanitizeCaretPos(pos) {
+		if ('left' in pos) {
+			pos.x = pos.left;
+		}
+
+		if ('top' in pos) {
+			pos.y = pos.top;
+		}
+
+		return pos;
 	}
 	
 	/**

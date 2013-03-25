@@ -222,8 +222,10 @@
 			tabSize: 4,
 			lineNumbers : true,
 			onCursorActivity: function() {
-				editor.setLineClass(hlLine, null, null);
-				hlLine = editor.setLineClass(editor.getCursor().line, null, 'activeline');
+				if (editor.setLineClass) {
+					editor.setLineClass(hlLine, null, null);
+					hlLine = editor.setLineClass(editor.getCursor().line, null, 'activeline');
+				}
 			},
 			onKeyEvent: function(ed, evt) {
 				if (ed.getOption('readOnly')) {
@@ -260,7 +262,10 @@
 		
 		// create editor instance
 		var editor = CodeMirror.fromTextArea(target, editorOptions);
-		hlLine = editor.setLineClass(0, 'activeline');
+		if (editor.setLineClass) {
+			hlLine = editor.setLineClass(0, 'activeline');
+		}
+		
 		if (initialPos != -1) {
 			editor.setCursor(editor.posFromIndex(initialPos));
 		}

@@ -2450,15 +2450,32 @@ CodeMirror.scenarioTooltip = (function() {
 	function resolvePosition(pos, editor) {
 		if (pos === 'caret') {
 			// get absolute position of current caret position
-			return editor.cursorCoords(true);
+			return sanitizeCaretPos(editor.cursorCoords(true));
 		}
 		
 		if (pos && 'x' in pos && 'y' in pos) {
 			// passed absolute coordinates
 			return pos;
 		}
+
+		if (pos && 'left' in pos && 'top' in pos) {
+			// passed absolute coordinates
+			return sanitizeCaretPos(pos);
+		}
 		
-		return editor.charCoords(sc.makePos(pos));
+		return sanitizeCaretPos(editor.charCoords(sc.makePos(pos)));
+	}
+
+	function sanitizeCaretPos(pos) {
+		if ('left' in pos) {
+			pos.x = pos.left;
+		}
+
+		if ('top' in pos) {
+			pos.y = pos.top;
+		}
+
+		return pos;
 	}
 	
 	/**
@@ -2927,8 +2944,10 @@ CodeMirror.scenarioPrompt = (function() {
 			tabSize: 4,
 			lineNumbers : true,
 			onCursorActivity: function() {
-				editor.setLineClass(hlLine, null, null);
-				hlLine = editor.setLineClass(editor.getCursor().line, null, 'activeline');
+				if (editor.setLineClass) {
+					editor.setLineClass(hlLine, null, null);
+					hlLine = editor.setLineClass(editor.getCursor().line, null, 'activeline');
+				}
 			},
 			onKeyEvent: function(ed, evt) {
 				if (ed.getOption('readOnly')) {
@@ -2965,7 +2984,10 @@ CodeMirror.scenarioPrompt = (function() {
 		
 		// create editor instance
 		var editor = CodeMirror.fromTextArea(target, editorOptions);
-		hlLine = editor.setLineClass(0, 'activeline');
+		if (editor.setLineClass) {
+			hlLine = editor.setLineClass(0, 'activeline');
+		}
+		
 		if (initialPos != -1) {
 			editor.setCursor(editor.posFromIndex(initialPos));
 		}

@@ -1,2 +1,3 @@
 /node_modules/
 /.build-catalog.json
+.DS_Store

@@ -1,10 +1,13 @@
 {
-	"name": "codemirror-movie",
-	"description": "CodeMirror Movie",
-	"version": "1.0.0",
-	"private": true,
-	"dependencies": {
-		"grunt-contrib-copy": ">=0.3.x",
-		"grunt-frontend": "*"
-	}
+  "name": "codemirror-movie",
+  "description": "CodeMirror Movie",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "grunt-contrib-copy": ">=0.3.x",
+    "grunt-frontend": "*"
+  },
+  "devDependencies": {
+    "grunt": "~0.3.17"
+  }
 }
