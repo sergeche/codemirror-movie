@@ -2452,15 +2452,17 @@ CodeMirror.scenarioTooltip = (function() {
 			// get absolute position of current caret position
 			return sanitizeCaretPos(editor.cursorCoords(true));
 		}
-		
-		if (pos && 'x' in pos && 'y' in pos) {
-			// passed absolute coordinates
-			return pos;
-		}
 
-		if (pos && 'left' in pos && 'top' in pos) {
-			// passed absolute coordinates
-			return sanitizeCaretPos(pos);
+		if (_.isObject(pos)) {
+			if ('x' in pos && 'y' in pos) {
+				// passed absolute coordinates
+				return pos;
+			}
+
+			if ('left' in pos && 'top' in pos) {
+				// passed absolute coordinates
+				return sanitizeCaretPos(pos);
+			}
 		}
 		
 		return sanitizeCaretPos(editor.charCoords(sc.makePos(pos)));

@@ -52,7 +52,8 @@ prompt: Hello world
 type: Hello world ::: Typing “Hello world”
 wait: 1000
 # Passing command options as JS object
-tooltip: {text: "Sample tooltip", wait: 2000}
+# tooltip: {text: "Sample tooltip", wait: 2000}
+tooltip: { text: "the setTimeout function is called", pos: "0:5", wait: 3000 }
 wait: 600
 # Perform CodeMirror pre-defined command
 run: {command: "goWordLeft", times: 2} ::: Move word left
