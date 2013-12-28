@@ -41,7 +41,7 @@ var movie = CodeMirror.movie('code');
 movie.play();
 ```
 
-Look at [full example](/sergeche/codemirror-movie/tree/master/dist/index.html) for more info.
+Look at [full example](/dist/index.html) for more info.
 
 ## Movie commands
 
