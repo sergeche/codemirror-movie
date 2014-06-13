@@ -198,9 +198,9 @@
 	}
 	
 	/**
-	 * Hich-level function to create movie instance on textarea.
+	 * High-level function to create movie instance on textarea.
 	 * @param {Element} target Reference to textarea, either <code>Element</code>
-	 * or string ID
+	 * or string ID. It can also accept existing CodeMirror object.
 	 * @param {Object} movieOptions Movie options. See <code>defaultOptions</code>
 	 * for value reference
 	 * @param {Object} editorOptions Additional options passed to CodeMirror
@@ -212,6 +212,7 @@
 		if (_.isString(target)) {
 			target = document.getElementById(target);
 		}
+		var targetIsTextarea = target.tagName == 'textarea';
 		
 		movieOptions = _.extend({}, defaultOptions, movieOptions || {});
 		
@@ -235,9 +236,9 @@
 			}
 		}, editorOptions || {});
 		
-		var initialValue = editorOptions.value || target.value || '';
+		var initialValue = editorOptions.value || (targetIsTextarea ? target.value : target.getValue()) || '';
 		
-		if (movieOptions.parse) {
+		if (targetIsTextarea && movieOptions.parse) {
 			_.extend(movieOptions, parseMovieDefinition(initialValue, movieOptions));
 			initialValue = movieOptions.value;
 			if (movieOptions.editorOptions) {
@@ -258,10 +259,14 @@
 		
 		// locate initial caret position from | symbol
 		var initialPos = initialValue.indexOf('|');
-		target.value = editorOptions.value = initialValue = initialValue.replace(/\|/g, '');
 		
-		// create editor instance
-		var editor = CodeMirror.fromTextArea(target, editorOptions);
+		if (targetIsTextarea) {
+			target.value = editorOptions.value = initialValue = initialValue.replace(/\|/g, '');
+		}
+
+		// create editor instance if needed
+		var editor = targetIsTextarea ? CodeMirror.fromTextArea(target, editorOptions) : target;
+
 		if (editor.setLineClass) {
 			hlLine = editor.setLineClass(0, 'activeline');
 		}
