@@ -73,12 +73,16 @@ CodeMirror.scenario = (function() {
 			
 			var chars = options.text.split('');
 			
+			var typing_shield = _.dom.toDOM('<div class="CodeMirror-movie_typing-shield"></div>');
+			editor.display.wrapper.appendChild(typing_shield);
+
 			timer(function perform() {
 				var ch = chars.shift();
 				editor.replaceSelection(ch, 'end');
 				if (chars.length) {
 					timer(perform, options.delay);
 				} else {
+					_.dom.remove(typing_shield);
 					next();
 				}
 			}, options.delay);
