@@ -2981,8 +2981,8 @@ CodeMirror.scenarioPrompt = (function() {
 		initialValue = initialValue.replace(/\r?\n/g, '\n');
 		
 		// locate initial caret position from | symbol
-		var initialPos = initialValue.indexOf('|');
-		target.value = editorOptions.value = initialValue = initialValue.replace(/\|/g, '');
+		var initialPos = initialValue.indexOf('~|');
+		target.value = editorOptions.value = initialValue = initialValue.replace('~|', '');
 		
 		// create editor instance
 		var editor = CodeMirror.fromTextArea(target, editorOptions);
