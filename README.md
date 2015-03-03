@@ -4,14 +4,13 @@ A plugin for CodeMirror editor for creating interactive code demos. See [Emmet D
 
 ## Dependencies
 
-* [CodeMirror](http://codemirror.net) 2.x or 3.x
-* [Underscore.js](http://underscorejs.org) 1.3.x or later
+* [CodeMirror](http://codemirror.net) 4.x
 
 ## How to use
 
 There are three easy steps to add CodeMirror Movie into your editor:
 
-* Add [`cm-movie.css` and `cm-movie-full.js`](https://github.com/sergeche/codemirror-movie/blob/master/dist/) files into your page. The JS file must be added _after_ CodeMirror main file since it extends `CodeMirror` object. If you’re using your own Underscore.js library, you can add `cm-move.js` file instead.
+* Add [`movie.css` and `movie.js`](https://github.com/sergeche/codemirror-movie/blob/master/dist/) files into your page. The JS file must be added _after_ CodeMirror main file since it extends `CodeMirror` object.
 
 * In `<textarea>` to be converted into CodeMirror editor, add the initial content of the editor and _movie scenario_, separated by `@@@`. Use `|` character to indicate initial caret position:
 
@@ -41,7 +40,7 @@ var movie = CodeMirror.movie('code');
 movie.play();
 ```
 
-Look at [full example](/dist/index.html) for more info.
+Look at [full example](/index.html) for more info.
 
 ## Movie commands
 
@@ -158,8 +157,8 @@ CodeMirror Movie uses [Backbone.Events](http://backbonejs.org/#Events) for event
 
 ## Building ##
 
-The project uses [Grunt.js](http://gruntjs.com) for building. To build project, run the following command in project’s root folder:
+The project uses [Gulp](http://gulpjs.com) for building. To build project, run the following command in project’s root folder:
 
-    npm install && grunt
+    npm install && пгдз
 
 The compiled files will appear in `./dist/` folder.
