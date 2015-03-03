@@ -3,21 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <title>CodeMirror Movie</title>
-<link rel="stylesheet" href="./src/codemirror2/codemirror.css">
-<link rel="stylesheet" href="./src/scenario.css">
+<link rel="stylesheet" href="./node_modules/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="./lib/movie.css">
 
-<script src="./src/codemirror2/codemirror.js"></script>
-<script src="./src/codemirror2/css.js"></script>
-<script src="./src/codemirror2/xml.js"></script>
+<script src="./node_modules/codemirror/lib/codemirror.js"></script>
+<script src="./node_modules/codemirror/mode/css/css.js"></script>
+<script src="./node_modules/codemirror/mode/xml/xml.js"></script>
 
-<script src="./src/lib/emmet.min.js"></script>
-<script src="./src/lib/tween.js"></script>
-<script src="./src/dom.js"></script>
-<script src="./src/scenario.js"></script>
-<script src="./src/scenario.tooltip.js"></script>
-<script src="./src/scenario.outline.js"></script>
-<script src="./src/scenario.prompt.js"></script>
-<script src="./src/movie.js"></script>
+<script src="./dist/movie.js"></script>
 
 <style type="text/css">
 .CodeMirror {
@@ -67,7 +60,7 @@ run: {command: "goWordLeft", times: 2} ::: Move word left
 		// Create simple UI to interact with movie
 		var btn = document.getElementsByTagName('button')[0];
 		btn.onclick = function() {
-			if (movie.state() == 'play') {
+			if (movie.state == 'play') {
 				movie.pause();
 				this.innerHTML = 'Play';
 			} else {
