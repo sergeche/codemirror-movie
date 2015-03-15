@@ -430,7 +430,7 @@ function movie(target) {
 	var movieOptions = arguments[1] === undefined ? {} : arguments[1];
 	var editorOptions = arguments[2] === undefined ? {} : arguments[2];
 
-	var hlLine = null;
+	setupCodeMirror();
 
 	if (typeof target === "string") {
 		target = document.getElementById(target);
@@ -445,12 +445,7 @@ function movie(target) {
 		indentWithTabs: true,
 		tabSize: 4,
 		lineNumbers: true,
-		onKeyEvent: function onKeyEvent(ed, evt) {
-			if (ed.getOption("readOnly")) {
-				evt.stop();
-				return true;
-			}
-		}
+		preventCursorMovement: true
 	}, editorOptions);
 
 	var initialValue = editorOptions.value || (targetIsTextarea ? target.value : target.getValue()) || "";
@@ -484,10 +479,6 @@ function movie(target) {
 
 	// create editor instance if needed
 	var editor = targetIsTextarea ? CodeMirror.fromTextArea(target, editorOptions) : target;
-
-	if (editor.setLineClass) {
-		hlLine = editor.setLineClass(0, "activeline");
-	}
 
 	if (initialPos != -1) {
 		editor.setCursor(editor.posFromIndex(initialPos));
@@ -626,6 +617,20 @@ function parseMovieDefinition(text) {
 		outline: Object.keys(outline).length ? outline : null,
 		editorOptions: editorOptions
 	};
+}
+
+function setupCodeMirror() {
+	if (typeof CodeMirror === "undefined" || "preventCursorMovement" in CodeMirror.defaults) {
+		return;
+	}
+
+	CodeMirror.defineOption("preventCursorMovement", false, function (cm) {
+		var handler = function (cm, event) {
+			return cm.getOption("readOnly") && event.preventDefault();
+		};
+		cm.on("keydown", handler);
+		cm.on("mousedown", handler);
+	});
 }
 
 if (typeof CodeMirror !== "undefined") {
