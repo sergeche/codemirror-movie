@@ -445,12 +445,6 @@ function movie(target) {
 		indentWithTabs: true,
 		tabSize: 4,
 		lineNumbers: true,
-		onCursorActivity: function onCursorActivity() {
-			if (editor.setLineClass) {
-				editor.setLineClass(hlLine, null, null);
-				hlLine = editor.setLineClass(editor.getCursor().line, null, "activeline");
-			}
-		},
 		onKeyEvent: function onKeyEvent(ed, evt) {
 			if (ed.getOption("readOnly")) {
 				evt.stop();
