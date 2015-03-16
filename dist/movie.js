@@ -7,6 +7,7 @@ var _utils = require("./utils");
 
 var extend = _utils.extend;
 var makePos = _utils.makePos;
+var getCursor = _utils.getCursor;
 
 var actions = {
 	/**
@@ -76,7 +77,7 @@ var actions = {
 			throw new Error("No position specified for \"moveTo\" action");
 		}
 
-		var curPos = editor.getCursor(true);
+		var curPos = getCursor(editor);
 		// reset selection, if exists
 		editor.setSelection(curPos, curPos);
 		var targetPos = makePos(options.pos, editor);
@@ -95,7 +96,7 @@ var actions = {
 		var stepChar = deltaChar < 0 ? -1 : 1;
 
 		timer(function perform() {
-			curPos = editor.getCursor(true);
+			curPos = getCursor(editor);
 			if (steps > 0 && !(curPos.line == targetPos.line && curPos.ch == targetPos.ch)) {
 
 				if (curPos.line != targetPos.line) {
@@ -147,13 +148,12 @@ var actions = {
 
 		var times = options.times;
 		timer(function perform() {
-			try {
-				if (typeof options.command === "function") {
-					options.command(editor, options);
-				} else {
-					editor.execCommand(options.command);
-				}
-			} catch (e) {}
+			if (typeof options.command === "function") {
+				options.command(editor, options);
+			} else {
+				editor.execCommand(options.command);
+			}
+
 			if (--times > 0) {
 				timer(perform, options.beforeDelay);
 			} else {
@@ -1060,6 +1060,8 @@ exports.toArray = toArray;
  * @return {String}
  */
 exports.prefixed = prefixed;
+exports.posObj = posObj;
+exports.getCursor = getCursor;
 
 /**
  * Helper function that produces <code>{line, ch}</code> object from
@@ -1145,9 +1147,22 @@ function prefixed(prop) {
 	return propCache[prop] = null;
 }
 
+function posObj(obj) {
+	return {
+		line: obj.line,
+		ch: obj.ch
+	};
+}
+
+function getCursor(editor) {
+	var start = arguments[1] === undefined ? "from" : arguments[1];
+
+	return posObj(editor.getCursor(start));
+}
+
 function makePos(pos, editor) {
 	if (pos === "caret") {
-		return editor.getCursor(true);
+		return getCursor(editor);
 	}
 
 	if (typeof pos === "string") {
@@ -1163,10 +1178,10 @@ function makePos(pos, editor) {
 	}
 
 	if (typeof pos === "number") {
-		return editor.posFromIndex(pos);
+		return posObj(editor.posFromIndex(pos));
 	}
 
-	return pos;
+	return posObj(pos);
 }
 
 function template(tmpl, data) {
