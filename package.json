@@ -1,9 +1,8 @@
 {
   "name": "codemirror-movie",
   "description": "CodeMirror Movie",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "./dist/movie.js",
-  "private": true,
   "scripts": {
     "prepublish": "./node_modules/.bin/gulp"
   },

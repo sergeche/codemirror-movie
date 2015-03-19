@@ -212,6 +212,10 @@ exports.toDOM = toDOM;
  * @param {String} val
  */
 exports.css = css;
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+"use strict";
 
 var toArray = require("./utils").toArray;
 
@@ -345,9 +349,6 @@ function setCSS(elem, params) {
 
 	elem.style.cssText += ";" + props.join(";");
 }
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
 },{"./utils":5}],3:[function(require,module,exports){
 "use strict";
 
@@ -363,6 +364,16 @@ var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["defau
  * editor initializer.
  */
 exports["default"] = movie;
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * A high-level library interface for creating scenarios over textarea
+ * element. The <code>CodeMirror.movie</code> takes reference to textarea
+ * element (or its ID) and parses its content for initial content value,
+ * scenario and outline.
+ */
+"use strict";
 
 var _utils = require("./utils");
 
@@ -403,7 +414,7 @@ var pcCharMap = {
 	down: "↓"
 };
 
-var defaultOptions = exports.defaultOptions = {
+var defaultOptions = {
 	/**
   * Automatically parse movie definition from textarea content. Setting
   * this property to <code>false</code> assumes that user wants to
@@ -425,7 +436,8 @@ var defaultOptions = exports.defaultOptions = {
 
 	/** Strip parentheses from prettyfied keyboard shortcut definition */
 	stripParentheses: false
-};
+};exports.defaultOptions = defaultOptions;
+
 function movie(target) {
 	var movieOptions = arguments[1] === undefined ? {} : arguments[1];
 	var editorOptions = arguments[2] === undefined ? {} : arguments[2];
@@ -636,23 +648,19 @@ function setupCodeMirror() {
 if (typeof CodeMirror !== "undefined") {
 	CodeMirror.movie = movie;
 }
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-/**
- * A high-level library interface for creating scenarios over textarea
- * element. The <code>CodeMirror.movie</code> takes reference to textarea
- * element (or its ID) and parses its content for initial content value,
- * scenario and outline.
- */
 },{"./scenario":4,"./utils":5,"./widgets/outline":7}],4:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+"use strict";
 
 var commonActions = _interopRequire(require("./actions"));
 
@@ -671,11 +679,12 @@ var STATE_PAUSE = "pause";
 // Regular expression used to split event strings
 var eventSplitter = /\s+/;
 
-var defaultOptions = exports.defaultOptions = {
+var defaultOptions = {
 	beforeDelay: 1000,
 	afterDelay: 1000
 };
 
+exports.defaultOptions = defaultOptions;
 /**
  * @param {Object} actions Actions scenario
  * @param {Object} data Initial content (<code>String</code>) or editor
@@ -705,7 +714,7 @@ var Scenario = (function () {
 		}
 	}
 
-	_prototypeProperties(Scenario, null, {
+	_createClass(Scenario, {
 		_setup: {
 			value: function _setup(editor) {
 				if (!editor && this._editor) {
@@ -714,9 +723,7 @@ var Scenario = (function () {
 
 				editor.execCommand("revert");
 				return editor;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		play: {
 
@@ -784,9 +791,7 @@ var Scenario = (function () {
 				this._editor.setOption("readOnly", true);
 				this.trigger("play");
 				timer(next, defaultOptions.beforeDelay);
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		pause: {
 
@@ -798,9 +803,7 @@ var Scenario = (function () {
 			value: function pause() {
 				this._state = STATE_PAUSE;
 				this.trigger("pause");
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		stop: {
 
@@ -815,9 +818,7 @@ var Scenario = (function () {
 					this._editor.setOption("readOnly", false);
 					this.trigger("stop");
 				}
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		state: {
 
@@ -828,8 +829,7 @@ var Scenario = (function () {
 
 			get: function () {
 				return this._state;
-			},
-			configurable: true
+			}
 		},
 		toggle: {
 
@@ -843,9 +843,7 @@ var Scenario = (function () {
 				} else {
 					this.play();
 				}
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		requestTimer: {
 			value: (function (_requestTimer) {
@@ -868,9 +866,7 @@ var Scenario = (function () {
 				} else {
 					return requestTimer(fn, delay);
 				}
-			}),
-			writable: true,
-			configurable: true
+			})
 		},
 		on: {
 
@@ -909,9 +905,7 @@ var Scenario = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		off: {
 
@@ -960,9 +954,7 @@ var Scenario = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		trigger: {
 
@@ -1006,9 +998,7 @@ var Scenario = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 
@@ -1045,9 +1035,6 @@ function requestTimer(fn, delay) {
 		return setTimeout(fn, delay);
 	}
 }
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
 },{"./actions":1,"./utils":5,"./widgets/prompt":8,"./widgets/tooltip":9}],5:[function(require,module,exports){
 "use strict";
 
@@ -1080,10 +1067,13 @@ exports.find = find;
  * @returns {Object} 
  */
 exports.parseJSON = parseJSON;
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 var propCache = {};
 
 // detect CSS 3D Transforms for smoother animations
-var has3d = exports.has3d = (function () {
+var has3d = (function () {
 	var el = document.createElement("div");
 	var cssTransform = prefixed("transform");
 	if (cssTransform) {
@@ -1093,6 +1083,8 @@ var has3d = exports.has3d = (function () {
 
 	return false;
 })();
+
+exports.has3d = has3d;
 
 function extend(obj) {
 	for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -1210,14 +1202,10 @@ function parseJSON(text) {
 		return {};
 	}
 }
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
 },{}],6:[function(require,module,exports){
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -1238,6 +1226,9 @@ exports.defaults = defaults;
  */
 exports._all = _all;
 exports.stop = stop;
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 var global = window;
 var time = Date.now ? function () {
 	return Date.now();
@@ -1314,7 +1305,7 @@ var defaults = {
 	reverse: false
 };
 
-var easings = exports.easings = {
+var easings = {
 	linear: function linear(t, b, c, d) {
 		return c * t / d + b;
 	},
@@ -1433,6 +1424,7 @@ var easings = exports.easings = {
 	}
 };
 
+exports.easings = easings;
 function mainLoop() {
 	if (!anims.length) {
 		// no animations left, stop polling
@@ -1516,7 +1508,7 @@ var Tween = exports.Tween = (function () {
 		}
 	}
 
-	_prototypeProperties(Tween, null, {
+	_createClass(Tween, {
 		start: {
 
 			/**
@@ -1535,9 +1527,7 @@ var Tween = exports.Tween = (function () {
 				}
 
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		stop: {
 
@@ -1553,9 +1543,7 @@ var Tween = exports.Tween = (function () {
 					}
 				}
 				return this;
-			},
-			writable: true,
-			configurable: true
+			}
 		},
 		toggle: {
 			value: function toggle() {
@@ -1564,9 +1552,7 @@ var Tween = exports.Tween = (function () {
 				} else {
 					this.start();
 				}
-			},
-			writable: true,
-			configurable: true
+			}
 		}
 	});
 
@@ -1598,13 +1584,19 @@ function stop() {
 }
 
 ;
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
 },{}],7:[function(require,module,exports){
 "use strict";
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { "default": obj }; };
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * Module that creates list of action hints and highlights items when specified
+ * action is performed
+ */
+"use strict";
 
 var dom = _interopRequireWildcard(require("../dom"));
 
@@ -1614,13 +1606,14 @@ var template = _utils.template;
 var find = _utils.find;
 var toArray = _utils.toArray;
 var extend = _utils.extend;
-var defaultOptions = exports.defaultOptions = {
+var defaultOptions = {
 	wrapperTemplate: "<ul class=\"CodeMirror-outline\"><%= content %></ul>",
 	itemTemplate: "<li data-action-id=\"<%= id %>\" class=\"CodeMirror-outline__item\"><%= title %></li>",
 	itemClass: "CodeMirror-outline__item",
 	selectedClass: "CodeMirror-outline__item_selected"
 };
 
+exports.defaultOptions = defaultOptions;
 /**
  * @param {Object} hints
  * @param {Scenario} scenario
@@ -1669,14 +1662,6 @@ exports["default"] = function (hints, scenario) {
 
 	return el;
 };
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-/**
- * Module that creates list of action hints and highlights items when specified
- * action is performed
- */
 },{"../dom":2,"../utils":5}],8:[function(require,module,exports){
 "use strict";
 
@@ -1688,6 +1673,13 @@ var _defineProperty = function (obj, key, value) { return Object.defineProperty(
 
 exports.show = show;
 exports.hide = hide;
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * Shows fake prompt dialog with interactive value typing
+ */
+"use strict";
 
 var tween = _interopRequire(require("../vendor/tween"));
 
@@ -1704,7 +1696,7 @@ var dialogInstance = null;
 var bgInstance = null;
 var lastTween = null;
 
-var actions = exports.actions = {
+var actions = {
 	prompt: function prompt(options, editor, next, timer) {
 		options = extend({
 			title: "Enter something",
@@ -1724,6 +1716,8 @@ var actions = exports.actions = {
 		});
 	}
 };
+
+exports.actions = actions;
 
 function show(text, target, callback) {
 	hide();
@@ -1826,12 +1820,6 @@ function typeText(target, options, timer, next) {
 function wrap(key, value) {
 	return typeof value === "object" ? value : _defineProperty({}, key, value);
 }
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-/**
- * Shows fake prompt dialog with interactive value typing
- */
 },{"../dom":2,"../utils":5,"../vendor/tween":6}],9:[function(require,module,exports){
 "use strict";
 
@@ -1843,6 +1831,14 @@ var _defineProperty = function (obj, key, value) { return Object.defineProperty(
 
 exports.show = show;
 exports.hide = hide;
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * Extension that allows authors to display context tooltips bound to specific
+ * positions
+ */
+"use strict";
 
 var tween = _interopRequire(require("../vendor/tween"));
 
@@ -1858,7 +1854,7 @@ var dom = _interopRequireWildcard(require("../dom"));
 var instance = null;
 var lastTween = null;
 
-var alignDefaults = exports.alignDefaults = {
+var alignDefaults = {
 	/** CSS selector for getting popup tail */
 	tailClass: "CodeMirror-tooltip__tail",
 
@@ -1872,7 +1868,8 @@ var alignDefaults = exports.alignDefaults = {
 	tailMargin: 11
 };
 
-var actions = exports.actions = {
+exports.alignDefaults = alignDefaults;
+var actions = {
 	/**
   * Shows tooltip with given text, wait for `options.wait`
   * milliseconds then hides tooltip
@@ -1913,6 +1910,8 @@ var actions = exports.actions = {
 		hide(next);
 	}
 };
+
+exports.actions = actions;
 
 function show(text, pos, callback) {
 	hide();
@@ -2096,12 +2095,5 @@ function sanitizeCaretPos(pos) {
 function wrap(key, value) {
 	return typeof value === "object" ? value : _defineProperty({}, key, value);
 }
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-/**
- * Extension that allows authors to display context tooltips bound to specific
- * positions
- */
 },{"../dom":2,"../utils":5,"../vendor/tween":6}]},{},[3])(3)
 });
