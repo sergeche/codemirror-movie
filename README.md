@@ -159,6 +159,6 @@ CodeMirror Movie uses [Backbone.Events](http://backbonejs.org/#Events) for event
 
 The project uses [Gulp](http://gulpjs.com) for building. To build project, run the following command in project’s root folder:
 
-    npm install && пгдз
+    npm install && gulp
 
 The compiled files will appear in `./dist/` folder.
