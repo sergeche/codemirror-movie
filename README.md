@@ -4,7 +4,7 @@ A plugin for CodeMirror editor for creating interactive code demos. See [Emmet D
 
 ## Dependencies
 
-* [CodeMirror](http://codemirror.net) 4.x
+* [CodeMirror](http://codemirror.net) 4.x or newer
 
 ## How to use
 
