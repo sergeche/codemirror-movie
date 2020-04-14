@@ -17,7 +17,9 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -wc"
+    "watch": "rollup -wc",
+    "clean": "rm -rf ./dist",
+    "prepare": "npm run clean && npm run build"
   },
   "repository": {
     "type": "git",

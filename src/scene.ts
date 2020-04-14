@@ -165,3 +165,13 @@ export function run(command: string | CommandFn, opt?: SceneRunOptions): Scene {
         }, options.delay);
     }
 }
+
+/**
+ * Select given range of text
+ */
+export function select(to: Pos, from: Pos = 'cursor'): Scene {
+    return function selectScene(editor, next) {
+        editor.setSelection(makePos(from, editor), makePos(to, editor));
+        next();
+    }
+}

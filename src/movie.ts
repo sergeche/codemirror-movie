@@ -8,7 +8,7 @@ interface Timer {
     id: number;
 }
 
-export interface ScenarioOptions {
+export interface MovieOptions {
     /** Delay before starting scene playback */
     beforeDelay: number;
     /** Delay after finishing scene playback */
@@ -27,22 +27,22 @@ export const enum PlaybackState {
     Pause = 'pause'
 }
 
-export interface ScenarioEvents {
+export interface MovieEvents {
     play: [];
     pause: [];
     resume: [];
     stop: [];
-    action: [number];
+    scene: [number];
 }
 
-export default class Scenario extends EventEmitter {
+export default class Movie extends EventEmitter<MovieEvents> {
     public state: PlaybackState = PlaybackState.Idle;
-    public options: ScenarioOptions;
+    public options: MovieOptions;
     private ix = 0;
     private initial: InitialState;
     private timer: Timer | null = null;
 
-    constructor(public scenes: Scene[], public editor: CodeMirror.Editor, opt?: Partial<ScenarioOptions>) {
+    constructor(public scenes: Scene[], public editor: CodeMirror.Editor, opt?: Partial<MovieOptions>) {
         super();
         this.options = {
             beforeDelay: 1000,
@@ -98,7 +98,7 @@ export default class Scenario extends EventEmitter {
                     return timer(() => this.stop(), this.options.afterDelay);
                 }
 
-                this.emit('action', this.ix);
+                this.emit('scene', this.ix);
                 const scene = this.scenes[this.ix++];
 
                 if (typeof scene === 'function') {
