@@ -1,164 +1,190 @@
 # CodeMirror Movie
 
-A plugin for CodeMirror editor for creating interactive code demos. See [Emmet Documentation](http://docs.emmet.io) web-site for examples.
+A plugin for CodeMirror editor for creating code demos as on [Emmet Documentation](http://docs.emmet.io) web-site.
 
-## Dependencies
+## Installation
 
-* [CodeMirror](http://codemirror.net) 4.x or newer
+Install it as a regular npm package:
+
+```sh
+npm i codemirror-movie
+```
 
 ## How to use
 
-There are three easy steps to add CodeMirror Movie into your editor:
+To create a presentation movie, you should create a _scenario_ with _scenes_, where each scene represents single action like typing text, displaying tooltip and so on:
 
-* Add [`movie.css` and `movie.js`](https://github.com/sergeche/codemirror-movie/blob/master/dist/) files into your page. The JS file must be added _after_ CodeMirror main file since it extends `CodeMirror` object.
 
-* In `<textarea>` to be converted into CodeMirror editor, add the initial content of the editor and _movie scenario_, separated by `@@@`. Use `|` character to indicate initial caret position:
+```js
+import CodeMirror from 'codemirror';
+import createMovie from 'codemirror-movie';
 
----
-```html
-<textarea id="code">
-&lt;!doctype html&gt;
-&lt;html lang="en"&gt;
-&lt;body&gt;
-	|
-&lt;/body&gt;
-&lt;/html&gt;
-@@@
-type: Hello world
-wait: 1000
-tooltip: Sample tooltip
-</textarea>
-```
-    
-* Initiate movie with JavaScript:
+// Create editor instance
+const editor = CodeMirror.fromTextArea('code');
 
-```javascript
-// pass textarea ID or textarea itself to CodeMirror.movie
-var movie = CodeMirror.movie('code');
+// Create a movie
+const movie = createMovie(editor, scene => [
+    scene.type('Hello world'),
+    scene.wait(1000),
+    scene.tooltip('Sample tooltip'),
+    scene.wait(600),
+    scene.run('goWordLeft', { times: 2 })
+]);
 
-// start playback
+// Now you can play, pause and stop (revert to initial state) movie
 movie.play();
 ```
 
-Look at [full example](/index.html) for more info.
+For a complete example, check out [./example](./example) folder.
 
-## Movie commands
+## Predefined scenes
 
-Movie scenario is defined by a series of _commands_ to be performed. Commands tell movie what to do, for example: “type something, wait for a second and show a tooltip”. Commands are described by a simple `name: value` pair, each command must be written on its own line.
+When you create a movie, you pass editor instance and a function, which should return an array of scenes. CodeMirror Movie comes with a number of predefined scenes, which are available as methods of a factory function.
 
-Every command can accept a number of options as JS object. By default, each command has good defaults and can accept only one, the most important option (marked as **bold** in the reference below). So, for example, `type: Hello world` and `type: {text: "Hello world"}` commands are equal.
-
-### Available commands ###
-
-#### type ####
-
-Types specified text, starting at current caret position, character-by-character.
+### `type(text: string, options?)`
+Types-in specified text, starting at current caret position, character-by-character.
 
 Options:
 
-* **`text`** (String): text to type
-* `delay` (Number): delay between character typing, milliseconds. Default is 60.
-* `pos` (Position): initial position where to start typing (see “[Position object](#position-object)” below for description).
+* `delay` (number): delay between character typing, milliseconds. Default is 60.
+* `pos` ([Position](#position-object)): initial position where to start typing.
 
-#### wait ####
+### `wait(timeout: number)`
+Wait for a `timeout` milliseconds and advanes to next scene.
 
-Wait for a specified amount of time and executes next command
+### `moveTo(pos: Position, options?)`
+Moves cursor to given [position](#position-object). By default, this action calculates optimal horizontal and vertical offsets and moves caret in “natural” manner, as user would do, character-by-character.
 
-* **`timeout`** (Number): wait timeout, milliseconds.
+Options:
 
-#### moveTo ####
+* `delay` (number): delay between caret movements, milliseconds. Setting this option to `0` will move caret immediately to designated position.
+* `afterDelay` (number): delay after movement is complete, before advancing to next scene.
 
-Moves caret to given position. By default, this action calculates optimal horizontal and vertical offsets and moves caret in “natural” manner, character-by-character.
+### `jumpTo(pos: Position)`
 
-* **`pos`** (Position): designated caret position (see “[Position object](#position-object)” below for description).
-* `delay` (Number): delay between caret movements, milliseconds. Setting this option to `0` will move caret immediately to designated position.
+Alias to `moveTo` scene with `delay: 0` option.
 
-#### jumpTo ####
+### `run(command: string, options?)`
 
-Alias to `moveTo` command with `delay: 0` option.
+Executes given [CodeMirror command](https://codemirror.net/doc/manual.html#commands).
 
-#### run ####
+Options:
 
-Performs given [CodeMirror command](https://github.com/marijnh/CodeMirror/blob/v3.0/lib/codemirror.js#L2938).
+* `delay` (number): delay before actual command execution, milliseconds. Default is `500`.
+* `times` (number): how many times the command should be executed. Defaults to `1`. Each command call is delayed with `delay` timeout.
 
-* **`command`** (String): command name to execute.
-* `beforeDelay` (Number): delay before actual command execution, milliseconds. Default is `500`, which improves user experience.
-* `times` (Number): how many times the command should be executed. Defaults to `1`. Each command call is delayed with `beforeDelay` milliseconds.
+### `select(to: Position, from?: Position)`
+Selects text in `from:to` range. By default, `from` is a current cursor position. Both `from` and `to` are [Position](#position-object) objects.
 
-#### select ####
+### `tooltip(text: string | HTMLElement, options?)`
 
-* **`to`** (Position): the selection end (see “[Position object](#position-object)” below for description).
-* `from` (Position): the selection start. Defaults to current caret position.
+Displays tooltip with given text (or given DOM element), waits for a specified timeout and automatically hides it.
 
-#### tooltip ####
+Options:
 
-Displays tooltip with given text, waits for a specified delay and automatically hides it.
+* `wait` (number): Number of milliseconds to wait before hiding tooltip.
+* `pos` ([Position](#position-object)): position where tooltip should be displayed. Default is current caret position.
+* `alignX` (`left` | `center` | `right`): horizontal alignment of tooltip, relative to `pos`. Default is `center`.
+* `alignY` (`above` | `below`): vertical alignment of tooltip, relative, to `pos`: display it either above or below specified position. Default is `above`.
+* `baseClass` (string): base class name for constructing tooltip UI. Default tooltip is a `<div>` with `baseClass` class name, which contains `${baseClass}-content` and `${baseClass}-tail` elements.
+* `animationShow` (string): value for `animation` CSS property. If given, applies value to `animation` CSS property right after tooltip is attached and waits until CSS animation is completed. You can specify animation as described in [CSS animation](https://developer.mozilla.org/en-US/docs/Web/CSS/animation) spec, e.g. animation name, delay, duration etc. Example: `scene.tooltip('Hello world', { animationShow: 'show-tooltip 0.2s ease-out' })`.
+* `animationHide` (string): same as `animationShow` but for hiding tooltip.
 
-* **`text`** (String): tooltip text, may contain HTML.
-* `wait` (Number): Number of milliseconds to wait before hiding tooltip.
-* `pos` (Position): position where tooltip should be displayed  (see “[Position object](#position-object)” below for description). Default to current caret position.
+*Important: if you use `animationShow` and/or `animationHide` options for tooltip, you _must_ define CSS animations with names used, otherwise tooltip will be stalled!*
 
-#### showTooltip ####
+### Advanced `tooltip` usage
 
-The same as `tooltip` command, but doesn’t hide tooltip, explicitly call `hideTooltip` command to do so. You should use these commands in cases when you want to display a tooltip, execute some other commands and then hide tooltip.
+The `tooltip` scene has several methods that you can use for advanced use cases:
 
-#### prompt ####
+* `tooltip.create(text: string, options?): HTMLElement`: creates tooltip element.
+* `tooltip.show(elem: HTMLElement, options?)`: displays given tooltip element.
+* `tooltip.hide(elem: HTMLElement, options?)`: hides given tooltip element.
 
-Emulates prompt dialog: shows input box and types “user input” character-by-character.
+For example, if you want to show tooltip, run some actions and then hide it, you movie might look like this:
 
-* **`text`** (String): required “user input”.
-* `title` (String): prompt dialog title, default is “Enter something”.
-* `delay` (Number): delay between character typing, milliseconds. Default is `80`.
-* `typeDelay` (Number): delay before actual input typing, milliseconds. Default is `1000`.
-* `hideDelay` (Number): delay before hiding prompt dialog, milliseconds. Default is `2000`.
+```js
+const movie = createMovie(editor, scene => {
+    const tooltip = scene.tooltip.create('Hello world');
 
-### Position object ###
+    return [
+        // Show created tooltip
+        scene.tooltip.show(tooltip, {
+            animationShow: 'my-anim 0.3s',
+            alignX: 'left'
+        }),
+        scene.run('selectWordLeft', { times: 2 }),
+        scene.wait(1000),
+        // Hide tooltip
+        scene.tooltip.hide(tooltip, {
+            animationHide: 'my-anim 0.3s reverse'
+        })
+    ];
+});
+```
+
+## Creating custom scenes
+
+Each scene is just a function with the following arguments:
+
+* `editor`: current CodeMirror editor instance.
+* `next()`: a function that _must_ be invoked when scene is finished; advances to next scene in scenario.
+* `timer(callback, timeout)`: function for creating timeouts. Same as `setTimeout()` but works with current movie playback state. If user pauses playback, timer will be paused as well and resumed when playback continues.
+
+Example of custom scene:
+
+```js
+const movie = createMovie(editor, scene => {
+    return [
+        scene.type('Hello world'),
+        // Custom scene: select word then replace it
+        (editor, next, timer) => {
+            editor.setSelection(
+                { line: 0, ch: 6 },
+                { line: 0, ch: 11 }
+            );
+            // Wait a bit
+            timer(() => {
+                // ...and insert new content
+                editor.replaceRange('planet',
+                    { line: 0, ch: 6 },
+                    { line: 0, ch: 11 });
+
+                // Finish scene, go to next one
+                next();
+            }, 200);
+        },
+        scene.wait(1000)
+    ];
+});
+```
+
+## Position object
 
 Some actions can accept `Position` object which can contain one of the following value:
 
-* `Number` – character index in text editor.
-* `line:char` (String) — line and character-in-line indexes (starting from 0).
-* `caret` (String) — current caret position.
+* `'cursor'` (string): current caret position.
+* `number`: character index in text editor.
+* `{line: number, ch: number}` (object): object used in CodeMirror for describing positions.
 
-## Passing CodeMirror options
+## Movie API
 
-To pass CodeMirror editor options (like syntax name), simply add `data-cm-*` attributes to `<textarea>` source element. For example, to set CSS syntax highlighting, your textarea may look like this:
+The movie instance created with `createMovie()` has the following methods:
 
-	<textarea data-cm-mode="text/css">
+* `play()`: start movie playback.
+* `pause()`: pause movie playback. The playback can be resumed with `play()` method.
+* `stop()`: stop playback and reset editor content to its initial state (when movie was created).
+* `toggle()`: toggle playback (play/pause).
+* `state` — current playback state: `idle`, `play`, `pause`.
+* `on(event, callback)`: subscribe to given `event`.
+* `off(event, callback)`: unsubscribe from given `event`.
 
+### Events
 
-## Outline ##
+The movie emits a number of events which you can subscribe and unsubscribe with `on(event, callback)` and `off(event, callback)` methods:
 
-The movie outline is a sidebar with some useful hints about movie key points. Every time a specified movie command runs, the corresponding outline item is highlighted.
+* `play`: movie playback was started;
+* `pause`: movie playback was paused.
+* `resume`: movie playback was resumed from paused state.
+* `stop`: movie playback was stopped.
+* `scene`: emitted when movie advances to the next scene The `callback` receives an scene index as argument.
 
-To add outline, simply put `:::` separator and outline item content after required movie command:
-
-    type: Hello world ::: Typing “Hello world”
-
-## Movie API ##
-
-The movie instance created with `CodeMirror.movie()` has the following methods:
-
-* `play()` — starts movie playback.
-* `pause()` — pauses movie. The playback can be resumed with `play()` method.
-* `stop()` — stops playback and resets editor content to initial state.
-* `toggle()` — toggles playback (play/pause).
-* `state()` — returns current playback state: `idle`, `play`, `pause`.
-
-### Events ###
-
-CodeMirror Movie uses [Backbone.Events](http://backbonejs.org/#Events) for events subscription and dispatching. Available events:
-
-* `play` — movie playback was started.
-* `pause` — movie playback was paused.
-* `resume` — movie playback was resumed from paused state.
-* `stop` — movie playback was stopped.
-* `action` — invoked when movie command was executed. The callback receives an action index as argument.
-
-## Building ##
-
-The project uses [Gulp](http://gulpjs.com) for building. To build project, run the following command in project’s root folder:
-
-    npm install && gulp
-
-The compiled files will appear in `./dist/` folder.

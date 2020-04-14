@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "alwaysStrict": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "newLine": "LF",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*.ts"]
+}

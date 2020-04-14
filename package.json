@@ -2,14 +2,34 @@
   "name": "codemirror-movie",
   "description": "CodeMirror Movie",
   "version": "1.2.1",
-  "main": "./dist/movie.js",
-  "scripts": {
-    "prepublish": "./node_modules/.bin/gulp"
-  },
+  "main": "./dist/movie.cjs.js",
+  "module": "./dist/movie.es.js",
+  "types": "./dist/index.d.ts",
   "devDependencies": {
-    "codemirror": "^4.13.0",
-    "gulp": "^3.8.11",
-    "gulp-minify-css": "^0.5.1",
-    "js-bundler": "git+https://github.com/sergeche/js-bundler.git#v1.0.0"
-  }
+    "@types/codemirror": "0.0.91",
+    "codemirror": "^5.52.2",
+    "eventemitter3": "^4.0.0",
+    "rollup": "^2.6.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "typescript": "^3.8.3"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -wc",
+    "clean": "rm -rf ./dist",
+    "prepare": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sergeche/codemirror-movie.git"
+  },
+  "keywords": [],
+  "author": "Sergey Chikuyonok <serge.che@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sergeche/codemirror-movie/issues"
+  },
+  "homepage": "https://github.com/sergeche/codemirror-movie#readme"
 }

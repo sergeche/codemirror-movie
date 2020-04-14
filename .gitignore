@@ -1,3 +1,10 @@
-/node_modules/
-/.build-catalog.json
+# Logs
+logs
+*.log
+npm-debug.log*
+node_modules
+jspm_packages
+.npm
+.node_repl_history
+/dist
 .DS_Store
