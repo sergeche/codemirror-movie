@@ -7,7 +7,7 @@
   "types": "./dist/index.d.ts",
   "devDependencies": {
     "@types/codemirror": "0.0.91",
-    "codemirror": "^5.52.2",
+    "codemirror": "^5.53.2",
     "eventemitter3": "^4.0.0",
     "rollup": "^2.6.0",
     "rollup-plugin-commonjs": "^10.1.0",

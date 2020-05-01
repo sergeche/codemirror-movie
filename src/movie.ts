@@ -57,8 +57,8 @@ export default class Movie extends EventEmitter<MovieEvents> {
     }
 
     /**
-	 * Play current scenario
-	 */
+     * Play current scenario
+     */
     play() {
         if (this.state === PlaybackState.Play) {
             // already playing
@@ -109,7 +109,6 @@ export default class Movie extends EventEmitter<MovieEvents> {
             };
 
             this.state = PlaybackState.Play;
-            this.editor.setOption('readOnly', true);
             this.emit('play');
             timer(next, this.options.beforeDelay);
         }
@@ -128,8 +127,8 @@ export default class Movie extends EventEmitter<MovieEvents> {
     }
 
     /**
-	 * Stops playback of current scenario
-	 */
+     * Stops playback of current scenario
+     */
     stop() {
         if (this.state !== PlaybackState.Idle) {
             this.state = PlaybackState.Idle;
@@ -143,8 +142,8 @@ export default class Movie extends EventEmitter<MovieEvents> {
     }
 
     /**
-	 * Toggle playback of movie scenario
-	 */
+     * Toggle playback of movie scenario
+     */
     toggle() {
         if (this.state === PlaybackState.Play) {
             this.pause();

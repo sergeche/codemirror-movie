@@ -93,7 +93,7 @@ export function moveTo(pos: Pos, opt?: Partial<SceneMoveToOptions>): Scene {
         const deltaChar = targetPos.ch - curPos.ch;
         const stepLine = deltaLine < 0 ? -1 : 1;
         const stepChar = deltaChar < 0 ? -1 : 1;
-        let steps = Math.max(deltaChar, deltaLine);
+        let steps = Math.max(Math.abs(deltaChar), Math.abs(deltaLine));
 
         // reset selection, if exists
         editor.setSelection(curPos, curPos);
@@ -101,15 +101,28 @@ export function moveTo(pos: Pos, opt?: Partial<SceneMoveToOptions>): Scene {
         timer(function perform() {
             curPos = editor.getCursor();
             if (steps > 0 && !(curPos.line == targetPos.line && curPos.ch == targetPos.ch)) {
-                if (curPos.line != targetPos.line) {
-                    curPos.line += stepLine;
-                }
+                // Fo some reason, CodeMirror doesn’t update cursor UI when setting
+                // it’s location with `setCursor()`.To overcome this problem, we’ll
+                // use go*-commands
+                editor.operation(() => {
+                    if (curPos.line !== targetPos.line) {
+                        curPos.line += stepLine;
+                        editor.execCommand(stepLine === 1 ? 'goLineDown' : 'goLineUp');
+                    }
 
-                if (curPos.ch != targetPos.ch) {
-                    curPos.ch += stepChar;
-                }
+                    if (curPos.ch !== targetPos.ch) {
+                        const line = editor.getLine(curPos.line);
+                        const nextCh = Math.min(line.length, Math.max(curPos.ch + stepChar));
+                        const curCh = editor.getCursor().ch;
+                        if (nextCh !== curCh) {
+                            editor.execCommand(nextCh > curCh ? 'goCharRight' : 'goCharLeft');
+                        }
 
-                editor.setCursor(curPos);
+                        curPos.ch += stepChar;
+                    }
+
+                    editor.setCursor(curPos);
+                });
                 steps--;
                 timer(perform, options.delay);
             } else {
