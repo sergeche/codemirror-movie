@@ -58,7 +58,7 @@ function tooltip(text: string | HTMLElement, opt?: Partial<SceneTooltipOptions>)
         ? create(text, options)
         : text;
 
-    return function tooltipScene(editor, next, timer) {
+    const tooltipScene: Scene = (editor, next, timer) => {
         const showScene = show(elem, opt);
         const hideScene = hide(elem, opt);
         showScene(editor, () => {
@@ -66,7 +66,10 @@ function tooltip(text: string | HTMLElement, opt?: Partial<SceneTooltipOptions>)
                 hideScene(editor, next, timer);
             }, options.wait);
         }, timer);
-    }
+    };
+
+    tooltipScene.dispose = () => elem.remove();
+    return tooltipScene;
 }
 
 /**
@@ -75,10 +78,12 @@ function tooltip(text: string | HTMLElement, opt?: Partial<SceneTooltipOptions>)
  */
 function show(tooltip: HTMLElement, opt?: Partial<SceneTooltipOptions>): Scene {
     const options = createOptions(opt);
-    return function showTooltipScene(editor, next) {
+    const showTooltipScene: Scene = (editor, next) => {
         attach(tooltip, editor, options);
         animate(tooltip, options.animationShow, next);
-    }
+    };
+    showTooltipScene.dispose = () => tooltip.remove();
+    return showTooltipScene;
 }
 
 /**

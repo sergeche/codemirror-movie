@@ -12,7 +12,14 @@ export type TimerFn = (fn: () => void, delay: number) => void;
  * automatically delay execution when scenario is paused and revert when played
  * again
  */
-export type Scene = (editor: CodeMirror.Editor, next: () => void, timer: TimerFn) => void;
+export interface Scene {
+    (editor: CodeMirror.Editor, next: () => void, timer: TimerFn): void;
+    /**
+     * Invoked when movie with current scene is stopped. You can use this method
+     * to clean-up DOM element etc.
+     */
+    dispose?: (editor: CodeMirror.Editor) => void;
+};
 
 /**
  * Describes character location in editor. Number is a character index, string

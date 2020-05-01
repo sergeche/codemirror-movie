@@ -137,6 +137,11 @@ export default class Movie extends EventEmitter<MovieEvents> {
                 stopTimer(this.timer);
                 this.timer = null;
             }
+            this.scenes.forEach(scene => {
+                if (scene.dispose) {
+                    scene.dispose(this.editor);
+                }
+            });
             this.emit('stop');
         }
     }
