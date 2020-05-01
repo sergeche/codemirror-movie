@@ -1,10 +1,13 @@
 import * as scene from './scene';
-import Movie, { MovieOptions } from './movie';
+import MovieClass, { MovieOptions, PlaybackState } from './movie';
 import { Scene } from './types';
 
 type ScenarioFactory = (scene: typeof import('./scene')) => Scene[];
+type Movie = MovieClass;
 
-export default function movie(editor: CodeMirror.Editor, factory: ScenarioFactory, options?: Partial<MovieOptions>): Movie {
+export default function movie(editor: CodeMirror.Editor, factory: ScenarioFactory, options?: Partial<MovieOptions>): MovieClass {
     const scenes = factory(scene);
-    return new Movie(scenes, editor, options);
+    return new MovieClass(scenes, editor, options);
 }
+
+export { Movie, MovieOptions, Scene, PlaybackState }

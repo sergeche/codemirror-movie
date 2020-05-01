@@ -134,6 +134,10 @@ export default class Movie extends EventEmitter<MovieEvents> {
         if (this.state !== PlaybackState.Idle) {
             this.state = PlaybackState.Idle;
             this.unlock();
+            if (this.timer) {
+                stopTimer(this.timer);
+                this.timer = null;
+            }
             this.emit('stop');
         }
     }
@@ -207,7 +211,14 @@ function createTimer(fn: () => any, timeout: number): Timer {
  * Runs given timer
  */
 function runTimer(timer: Timer, timeout = timer.timeout) {
-    timer.id = window.setTimeout(timer.fn, timer.timeout);
+    timer.id = window.setTimeout(timer.fn, timeout);
+}
+
+/**
+ * Stops given timer
+ */
+function stopTimer(timer: Timer) {
+    clearTimeout(timer.id);
 }
 
 /**

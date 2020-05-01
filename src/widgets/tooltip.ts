@@ -14,7 +14,7 @@ interface SceneTooltip {
     hide(tooltip: HTMLElement, opt?: Partial<SceneTooltipOptions>): void
 }
 
-interface SceneTooltipOptions {
+export interface SceneTooltipOptions {
     /** Time to wait before hiding tooltip, ms */
     wait: number;
 
@@ -35,6 +35,12 @@ interface SceneTooltipOptions {
 
     /** CSS animation value for hiding tooltip */
     animationHide?: string;
+
+    /**
+     * Method for attaching tooltip to editor: should mount element into DOM.
+     * If not specified, a default `editor.addWidget()` is used.
+     */
+    attach?: (editor: CodeMirror.Editor, tooltip: HTMLElement, pos: CodeMirror.Position, options: SceneTooltipOptions) => void;
 }
 
 const tooltipWidget: SceneTooltip = Object.assign(tooltip, { show, hide, create });
@@ -92,8 +98,8 @@ function hide(tooltip: HTMLElement, opt?: Partial<SceneTooltipOptions>): Scene {
  * Constructs tooltip UI
  */
 function create(text: string, opt?: Partial<SceneTooltipOptions>): HTMLElement {
-    const { baseClass }  = createOptions(opt);
-    return toDOM(`<div class="${baseClass}">
+    const { baseClass, alignX, alignY } = createOptions(opt);
+    return toDOM(`<div class="${baseClass}" data-align-x="${alignX}" data-align-y="${alignY}">
         <div class="${baseClass}-content">${text}</div>
         <div class="${baseClass}-tail"></div>
     </div>`) as HTMLElement;
@@ -125,19 +131,23 @@ function animate(elem: HTMLElement, animation: string | undefined, next: () => v
 
 function attach(tooltip: HTMLElement, editor: CodeMirror.Editor, options: SceneTooltipOptions): HTMLElement {
     const pt = makePos(options.pos, editor);
-    const px = editor.cursorCoords(pt, 'local');
 
-    const { alignX, alignY } = options;
-    editor.addWidget(pt, tooltip, false);
-    const { offsetWidth, offsetHeight } = tooltip;
-    if (alignX === 'center') {
-        tooltip.style.left = `${px.left - offsetWidth / 2}px`;
-    } else if (alignX === 'right') {
-        tooltip.style.left = `${px.left - offsetWidth}px`;
-    }
+    const { alignX, alignY, attach } = options;
+    if (attach) {
+        attach(editor, tooltip, pt, options);
+    } else {
+        const px = editor.cursorCoords(pt, 'local');
+        editor.addWidget(pt, tooltip, false);
+        const { offsetWidth, offsetHeight } = tooltip;
+        if (alignX === 'center') {
+            tooltip.style.left = `${px.left - offsetWidth / 2}px`;
+        } else if (alignX === 'right') {
+            tooltip.style.left = `${px.left - offsetWidth}px`;
+        }
 
-    if (alignY === 'above') {
-        tooltip.style.top = `${px.top - offsetHeight}px`;
+        if (alignY === 'above') {
+            tooltip.style.top = `${px.top - offsetHeight}px`;
+        }
     }
 
     return tooltip;
