@@ -1,7 +1,7 @@
 {
   "name": "codemirror-movie",
   "description": "CodeMirror Movie",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "main": "./dist/movie.cjs.js",
   "module": "./dist/movie.es.js",
   "types": "./dist/index.d.ts",
