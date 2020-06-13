@@ -50,7 +50,7 @@ export function type(text: string, opt?: Partial<SceneTypeOptions>): Scene {
         const chars = String(text).split('');
 
         timer(function perform() {
-            var ch = chars.shift()!;
+            const ch = chars.shift()!;
             editor.replaceSelection(ch, 'end');
             if (chars.length) {
                 timer(perform, options.delay);

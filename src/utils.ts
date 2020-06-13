@@ -5,7 +5,7 @@ import { Pos } from './types';
  * passed argument
  */
 export function makePos(pos: Pos, editor: CodeMirror.Editor): CodeMirror.Position {
-    if (pos === 'caret') {
+    if (pos === 'caret' || pos === 'cursor') {
         return editor.getCursor();
     }
 
